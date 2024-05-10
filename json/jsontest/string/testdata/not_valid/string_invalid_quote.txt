@@ -1,0 +1,6 @@
+{
+    "name": "aboba,
+    {
+        "hello": "world"
+    }
+}

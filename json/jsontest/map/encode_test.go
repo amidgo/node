@@ -1,0 +1,81 @@
+package map_test
+
+import (
+	"testing"
+
+	"github.com/amidgo/node"
+	"github.com/amidgo/node/json"
+	"github.com/amidgo/node/json/jsontest"
+	"github.com/amidgo/tester"
+)
+
+func Test_Map_Encode(t *testing.T) {
+	tester.RunNamedTesters(t,
+		&jsontest.EncodeTestCase{
+			CaseName:     "empty map",
+			Node:         node.MakeMapNode(),
+			ExpectedData: "{}",
+		},
+		&jsontest.EncodeTestCase{
+			CaseName: "basic map",
+			Node: node.MakeMapNodeWithContent(
+				node.MakeStringNode("key"), node.MakeStringNode("value"),
+			),
+			ExpectedData: `{"key":"value"}`,
+		},
+		&jsontest.EncodeTestCase{
+			CaseName: "inner map",
+			Node: node.MakeMapNodeWithContent(
+				node.MakeStringNode("key"), node.MakeStringNode("value"),
+				node.MakeStringNode("object"), node.MakeMapNodeWithContent(
+					node.MakeStringNode("key"), node.MakeStringNode("value"),
+					node.MakeStringNode("object"), node.MakeMapNode(),
+				),
+				node.MakeStringNode("empty"), node.MakeMapNode(),
+			),
+			ExpectedData: `{"key":"value","object":{"key":"value","object":{}},"empty":{}}`,
+		},
+		&jsontest.EncodeTestCase{
+			CaseName: "bool key kind",
+			Node: node.MakeMapNodeWithContent(
+				node.MakeBoolNode(false), node.MakeStringNode("ksdf"),
+			),
+			ExpectedErr: json.ErrInvalidMapKeyKind,
+		},
+		&jsontest.EncodeTestCase{
+			CaseName: "null key kind",
+			Node: node.MakeMapNodeWithContent(
+				node.EmptyNode{}, node.MakeStringNode("ksdf"),
+			),
+			ExpectedErr: json.ErrInvalidMapKeyKind,
+		},
+		&jsontest.EncodeTestCase{
+			CaseName: "array key kind",
+			Node: node.MakeMapNodeWithContent(
+				node.MakeArrayNode(), node.MakeStringNode("ksdf"),
+			),
+			ExpectedErr: json.ErrInvalidMapKeyKind,
+		},
+		&jsontest.EncodeTestCase{
+			CaseName: "map key kind",
+			Node: node.MakeMapNodeWithContent(
+				node.MakeMapNode(), node.MakeStringNode("ksdf"),
+			),
+			ExpectedErr: json.ErrInvalidMapKeyKind,
+		},
+		&jsontest.EncodeTestCase{
+			CaseName: "integer key kind",
+			Node: node.MakeMapNodeWithContent(
+				node.MakeIntegerNode(0), node.MakeStringNode("ksdf"),
+			),
+			ExpectedErr: json.ErrInvalidMapKeyKind,
+		},
+		&jsontest.EncodeTestCase{
+			CaseName: "float key kind",
+			Node: node.MakeMapNodeWithContent(
+				node.MakeFloatNode(0), node.MakeStringNode("ksdf"),
+			),
+			ExpectedErr: json.ErrInvalidMapKeyKind,
+		},
+	)
+}

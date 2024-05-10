@@ -1,0 +1,6 @@
+{
+    "valid": null,
+    null: null,
+    false: false,
+    true: true
+}

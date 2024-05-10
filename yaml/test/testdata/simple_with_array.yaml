@@ -1,0 +1,33 @@
+tags:
+  - name: education-periods
+    description: Управление учебными периодами
+  - name: admission-orders
+    description: Управление приказами о зачислении
+  - name: educational-departments
+    description: Управление учебными отделениями
+  - name: teachers
+    description: Управление преподавателями
+  - name: teacher
+    description: Запросы для конкретного преподавателя
+  - name: curriculums
+    description: Управление учебными планами
+  - name: curriculum-disciplines
+    description: Управление дисциплинами учебного плана
+  - name: disciplines
+    description: Управление всеми учебными дисциплинами
+  - name: groups
+    description: Управление учебными группами
+  - name: users
+    description: Управление пользователями
+  - name: student_grades
+    description: Управление оценками студент(а|ов)
+  - name: login
+    description: Запросы Авторизации
+  - name: college-managers
+    description: Запросы для учебной части
+  - name: department-heads
+    description: Запросы для управляющего отделением
+  - name: students
+    description: Запросы для управления студентами
+  - name: attendance
+    description: Посещаемость
