@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Dima",
+        "birthdate": "2004-11-25"
+    },
+    {
+        "name": "Vika",
+        "birthdate": "2009-05-28"
+    },
+    {
+        "name": "иван",
+        "birthdate": "иван"
+    },
+    {
+        "name": "андрей",
+        "birthdate": "1973-04-25"
+    },
+    {
+        "user": {
+            "name": "андрей",
+            "birthdate": "1973-04-25"
+        }
+    },
+    "hello",
+    "aboba",
+    [
+        "hello",
+        "aboba"
+    ]
+]

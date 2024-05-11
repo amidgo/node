@@ -33,6 +33,7 @@ func (c *DecodeTestCase) Test(t *testing.T) {
 
 type EncodeTestCase struct {
 	CaseName string
+	Indent   int
 
 	Node         node.Node
 	ExpectedData string
@@ -44,7 +45,7 @@ func (c *EncodeTestCase) Name() string {
 }
 
 func (c *EncodeTestCase) Test(t *testing.T) {
-	encoder := new(json.Encoder)
+	encoder := &json.Encoder{Indent: c.Indent}
 
 	data, err := encoder.Encode(c.Node)
 
