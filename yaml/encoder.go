@@ -3,6 +3,7 @@ package yaml
 import (
 	"bytes"
 	"errors"
+	"io"
 
 	"github.com/amidgo/node"
 	"gopkg.in/yaml.v3"
@@ -20,9 +21,16 @@ type Encoder struct {
 }
 
 func (e *Encoder) Encode(nd node.Node) ([]byte, error) {
+	buf := bytes.Buffer{}
+	err := e.EncodeTo(&buf, nd)
+
+	return buf.Bytes(), err
+}
+
+func (e *Encoder) EncodeTo(w io.Writer, nd node.Node) error {
 	ynd, err := e.convertNode(nd)
 	if err != nil {
-		return nil, errors.Join(ErrConvertToYamlNode, err)
+		return errors.Join(ErrConvertToYamlNode, err)
 	}
 
 	ynd = &yaml.Node{
@@ -30,19 +38,17 @@ func (e *Encoder) Encode(nd node.Node) ([]byte, error) {
 		Content: []*yaml.Node{ynd},
 	}
 
-	out := bytes.Buffer{}
-
-	enc := yaml.NewEncoder(&out)
+	enc := yaml.NewEncoder(w)
 	defer enc.Close()
 
 	enc.SetIndent(e.Indent)
 
 	err = enc.Encode(ynd)
 	if err != nil {
-		return nil, errors.Join(ErrMarshalYamlNode, err)
+		return errors.Join(ErrMarshalYamlNode, err)
 	}
 
-	return out.Bytes(), nil
+	return nil
 }
 
 func Encode(nd node.Node) ([]byte, error) {

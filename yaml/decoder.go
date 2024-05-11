@@ -2,6 +2,7 @@ package yaml
 
 import (
 	"errors"
+	"io"
 
 	"github.com/amidgo/node"
 	"gopkg.in/yaml.v3"
@@ -20,6 +21,19 @@ func (d *Decoder) Decode(data []byte) (node.Node, error) {
 	var yamlNode yaml.Node
 
 	err := yaml.Unmarshal(data, &yamlNode)
+	if err != nil {
+		return nil, errors.Join(ErrUnmarshalIntoYamlNode, err)
+	}
+
+	return d.convertYamlNode(&yamlNode)
+}
+
+func (d *Decoder) DecodeFrom(r io.Reader) (node.Node, error) {
+	var yamlNode yaml.Node
+
+	dec := yaml.NewDecoder(r)
+
+	err := dec.Decode(&yamlNode)
 	if err != nil {
 		return nil, errors.Join(ErrUnmarshalIntoYamlNode, err)
 	}

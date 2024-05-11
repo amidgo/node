@@ -20,6 +20,14 @@ func MakeMapNodeWithContent(content ...Node) *MapNode {
 	}
 }
 
+func MakeMapNodeWithCap(cap int) *MapNode {
+	return &MapNode{
+		BaseContentableNode: BaseContentableNode{
+			content: make([]Node, 0, cap),
+		},
+	}
+}
+
 func (h *MapNode) Type() Type {
 	return Map
 }

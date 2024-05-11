@@ -20,6 +20,14 @@ func MakeArrayNodeWithContent(content ...Node) *ArrayNode {
 	}
 }
 
+func MakeArrayNodeWithCap(cap int) *ArrayNode {
+	return &ArrayNode{
+		BaseContentableNode: BaseContentableNode{
+			content: make([]Node, 0, cap),
+		},
+	}
+}
+
 func (h *ArrayNode) Type() Type {
 	return Array
 }
