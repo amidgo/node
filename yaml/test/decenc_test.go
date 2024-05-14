@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"testing"
 
+	pkgyaml "gopkg.in/yaml.v3"
+
+	"github.com/amidgo/node"
 	"github.com/amidgo/node/yaml"
 	"github.com/amidgo/tester"
 	"github.com/stretchr/testify/assert"
@@ -18,6 +21,8 @@ var (
 	simpleSwaggerData []byte
 	//go:embed testdata/simple_with_array.yaml
 	simpleSwaggerWithArrayData []byte
+	//go:embed testdata/null.yaml
+	nullData []byte
 )
 
 type DecEncTester struct {
@@ -62,4 +67,99 @@ func Test_DecEnc(t *testing.T) {
 		},
 	)
 
+}
+
+type DecodeTester struct {
+	CaseName     string
+	Decoder      node.Decoder
+	Input        []byte
+	ExpectedNode node.Node
+}
+
+func (d *DecodeTester) Name() string {
+	return d.CaseName
+}
+
+func (d *DecodeTester) Test(t *testing.T) {
+	node, err := d.Decoder.Decode(d.Input)
+	require.NoError(t, err)
+
+	assert.Equal(t, d.ExpectedNode, node)
+}
+
+func Test_DecodeEmpty(t *testing.T) {
+	tester.RunNamedTesters(t,
+		&DecodeTester{
+			CaseName: "all null yaml cases",
+			Decoder:  new(yaml.Decoder),
+			Input:    nullData,
+			ExpectedNode: node.MakeMapNodeWithContent(
+				&yaml.YamlStyleNode{
+					Node: node.MakeStringNode("emptyKey"),
+				},
+				node.EmptyNode{},
+
+				&yaml.YamlStyleNode{
+					Node: node.MakeStringNode("nullKey"),
+				},
+				node.EmptyNode{},
+
+				&yaml.YamlStyleNode{
+					Node: node.MakeStringNode("singleCharNullKey"),
+				},
+				node.EmptyNode{},
+
+				&yaml.YamlStyleNode{
+					Node: node.MakeStringNode("singleQuotedEmptyKey"),
+				},
+				&yaml.YamlStyleNode{
+					Node:      node.MakeStringNode(""),
+					YamlStyle: pkgyaml.SingleQuotedStyle,
+				},
+
+				&yaml.YamlStyleNode{
+					Node: node.MakeStringNode("singleQuotedNullKey"),
+				},
+				&yaml.YamlStyleNode{
+					Node:      node.MakeStringNode("null"),
+					YamlStyle: pkgyaml.SingleQuotedStyle,
+				},
+
+				&yaml.YamlStyleNode{
+					Node: node.MakeStringNode("singleQuotedSingleCharNullKey"),
+				},
+				&yaml.YamlStyleNode{
+					Node:      node.MakeStringNode("~"),
+					YamlStyle: pkgyaml.SingleQuotedStyle,
+				},
+
+				&yaml.YamlStyleNode{
+					Node: node.MakeStringNode("doubleQuotedEmptyKey"),
+					// YamlStyle: pkgyaml.TaggedStyle,
+				},
+				&yaml.YamlStyleNode{
+					Node:      node.MakeStringNode(""),
+					YamlStyle: pkgyaml.DoubleQuotedStyle,
+				},
+
+				&yaml.YamlStyleNode{
+					Node: node.MakeStringNode("doubleQuotedNullKey"),
+					// YamlStyle: pkgyaml.TaggedStyle,
+				},
+				&yaml.YamlStyleNode{
+					Node:      node.MakeStringNode("null"),
+					YamlStyle: pkgyaml.DoubleQuotedStyle,
+				},
+
+				&yaml.YamlStyleNode{
+					Node: node.MakeStringNode("doubleQuotedSingleCharNullKey"),
+					// YamlStyle: pkgyaml.TaggedStyle,
+				},
+				&yaml.YamlStyleNode{
+					Node:      node.MakeStringNode("~"),
+					YamlStyle: pkgyaml.DoubleQuotedStyle,
+				},
+			),
+		},
+	)
 }

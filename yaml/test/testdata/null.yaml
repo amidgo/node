@@ -1,0 +1,9 @@
+emptyKey:
+nullKey: null
+singleCharNullKey: ~
+singleQuotedEmptyKey: ''
+singleQuotedNullKey: 'null'
+singleQuotedSingleCharNullKey: '~'
+doubleQuotedEmptyKey: ""
+doubleQuotedNullKey: "null"
+doubleQuotedSingleCharNullKey: "~"

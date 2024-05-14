@@ -18,8 +18,11 @@ func (e *Encoder) Encode(nd node.Node) ([]byte, error) {
 	output := bytes.Buffer{}
 
 	err := e.EncodeTo(&output, nd)
+	if err != nil {
+		return nil, err
+	}
 
-	return output.Bytes(), err
+	return output.Bytes(), nil
 }
 
 func (e *Encoder) EncodeTo(w io.Writer, nd node.Node) error {

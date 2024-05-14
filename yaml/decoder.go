@@ -60,7 +60,7 @@ func (d *Decoder) convertYamlNode(ynd *yaml.Node) (node.Node, error) {
 	case yaml.SequenceNode:
 		return d.convertSequenceYamlNode(ynd)
 	case yaml.ScalarNode:
-		return d.convertScalarYamlNode(ynd)
+		return convertScalarYamlNode(ynd), nil
 	default:
 		return nil, &UnsupportedYamlNodeKindError{InputKind: ynd.Kind}
 	}
@@ -93,18 +93,22 @@ func (d *Decoder) convertSequenceYamlNode(ynd *yaml.Node) (node.Node, error) {
 		arrayNode.AppendNode(nd)
 	}
 
-	return &yamlStyleNode{Node: arrayNode, style: ynd.Style}, nil
+	return &YamlStyleNode{Node: arrayNode, YamlStyle: ynd.Style}, nil
 }
 
-func (d *Decoder) convertScalarYamlNode(ynd *yaml.Node) (node.Node, error) {
-	return &yamlStyleNode{Node: node.MakeStringNode(ynd.Value), style: ynd.Style}, nil
+func convertScalarYamlNode(ynd *yaml.Node) node.Node {
+	if ynd.Tag == "!!null" {
+		return node.EmptyNode{}
+	}
+
+	return &YamlStyleNode{Node: node.MakeStringNode(ynd.Value), YamlStyle: ynd.Style}
 }
 
-type yamlStyleNode struct {
+type YamlStyleNode struct {
 	node.Node
-	style yaml.Style
+	YamlStyle yaml.Style
 }
 
-func (y *yamlStyleNode) Style() yaml.Style {
-	return y.style
+func (y *YamlStyleNode) Style() yaml.Style {
+	return y.YamlStyle
 }
