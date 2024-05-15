@@ -3,6 +3,8 @@ package yaml
 import (
 	"errors"
 	"io"
+	"strconv"
+	"strings"
 
 	"github.com/amidgo/node"
 	"gopkg.in/yaml.v3"
@@ -96,12 +98,40 @@ func (d *Decoder) convertSequenceYamlNode(ynd *yaml.Node) (node.Node, error) {
 	return &YamlStyleNode{Node: arrayNode, YamlStyle: ynd.Style}, nil
 }
 
-func convertScalarYamlNode(ynd *yaml.Node) node.Node {
-	if ynd.Tag == "!!null" {
-		return node.EmptyNode{}
-	}
+const (
+	nullTag  = "!!null"
+	boolTag  = "!!bool"
+	intTag   = "!!int"
+	floatTag = "!!float"
+)
 
-	return &YamlStyleNode{Node: node.MakeStringNode(ynd.Value), YamlStyle: ynd.Style}
+func convertScalarYamlNode(ynd *yaml.Node) node.Node {
+	switch ynd.Tag {
+	case nullTag:
+		return node.EmptyNode{}
+	case boolTag:
+		return node.MakeBoolNode(strings.ToLower(ynd.Value) == "true")
+	case intTag:
+		i, err := strconv.ParseInt(ynd.Value, 10, 64)
+		if err != nil {
+			return stringNode(ynd.Value, ynd.Style)
+		}
+
+		return node.MakeIntegerNode(i)
+	case floatTag:
+		f, err := strconv.ParseFloat(ynd.Value, 64)
+		if err != nil {
+			return stringNode(ynd.Value, ynd.Style)
+		}
+
+		return node.MakeFloatNode(f)
+	default:
+		return stringNode(ynd.Value, ynd.Style)
+	}
+}
+
+func stringNode(value string, style yaml.Style) node.Node {
+	return &YamlStyleNode{Node: node.MakeStringNode(value), YamlStyle: style}
 }
 
 type YamlStyleNode struct {
