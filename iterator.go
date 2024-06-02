@@ -2,7 +2,6 @@ package node
 
 type MapNodeIterator struct {
 	content []Node
-	offset  int
 }
 
 func MakeMapNodeIterator(content []Node) *MapNodeIterator {
@@ -12,19 +11,20 @@ func MakeMapNodeIterator(content []Node) *MapNodeIterator {
 }
 
 func (i *MapNodeIterator) HasNext() bool {
-	return i.offset < len(i.content)
+	return len(i.content) >= 1
 }
 
 func (i *MapNodeIterator) Next() (key, value Node) {
-	key = i.content[i.offset]
+	key = i.content[0]
 
-	if i.offset+1 < len(i.content) {
-		value = i.content[i.offset+1]
-	} else {
-		value = EmptyNode{}
+	if len(i.content) == 1 {
+		i.content = i.content[:0]
+
+		return key, EmptyNode{}
 	}
 
-	i.offset += 2
+	value = i.content[1]
+	i.content = i.content[2:]
 
 	return key, value
 }

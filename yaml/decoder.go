@@ -11,10 +11,11 @@ import (
 )
 
 var (
-	ErrUnmarshalIntoYamlNode   = errors.New("unmarshal into yaml node")
-	ErrEmptyDocumentNode       = errors.New("empty document node")
-	ErrConvertMappingNodeItem  = errors.New("convert mapping node item")
-	ErrConvertSequenceNodeItem = errors.New("convert sequence node item")
+	ErrUnmarshalIntoYamlNode     = errors.New("unmarshal into yaml node")
+	ErrEmptyDocumentNode         = errors.New("empty document node")
+	ErrConvertMappingNodeKeyItem = errors.New("convert mapping node item")
+	ErrConvertMappingNodeItem    = errors.New("convert mapping node item")
+	ErrConvertSequenceNodeItem   = errors.New("convert sequence node item")
 )
 
 type Decoder struct{}
@@ -69,22 +70,31 @@ func (d *Decoder) convertYamlNode(ynd *yaml.Node) (node.Node, error) {
 }
 
 func (d *Decoder) convertMappingYamlNode(ynd *yaml.Node) (node.Node, error) {
-	mappingNode := node.MakeMapNode()
+	var mappingNode node.Node = node.MakeMapNode()
 
-	for _, item := range ynd.Content {
-		nd, err := d.convertYamlNode(item)
+	iter := NewYamlNodeIterator(ynd.Content)
+
+	for iter.HasNext() {
+		key, value := iter.Next()
+
+		keyNode, err := d.convertYamlNode(key)
+		if err != nil {
+			return nil, errors.Join(ErrConvertMappingNodeKeyItem, err)
+		}
+
+		contentNode, err := d.convertYamlNode(value)
 		if err != nil {
 			return nil, errors.Join(ErrConvertMappingNodeItem, err)
 		}
 
-		mappingNode.AppendNode(nd)
+		mappingNode = node.MapAppend(mappingNode, keyNode, contentNode)
 	}
 
 	return mappingNode, nil
 }
 
 func (d *Decoder) convertSequenceYamlNode(ynd *yaml.Node) (node.Node, error) {
-	arrayNode := node.MakeArrayNode()
+	var arrayNode node.Node = node.MakeArrayNode()
 
 	for _, item := range ynd.Content {
 		nd, err := d.convertYamlNode(item)
@@ -92,7 +102,7 @@ func (d *Decoder) convertSequenceYamlNode(ynd *yaml.Node) (node.Node, error) {
 			return nil, errors.Join(ErrConvertSequenceNodeItem, err)
 		}
 
-		arrayNode.AppendNode(nd)
+		arrayNode = node.ArrayAppend(arrayNode, nd)
 	}
 
 	return &YamlStyleNode{Node: arrayNode, YamlStyle: ynd.Style}, nil

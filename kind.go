@@ -8,7 +8,8 @@ const (
 	Float
 	Bool
 	Empty
-	Content
+	Map
+	Array
 )
 
 func (k Kind) String() string {
@@ -23,7 +24,9 @@ func (k Kind) String() string {
 		return "Bool"
 	case Empty:
 		return "Empty"
-	case Content:
+	case Map:
+		return "Map"
+	case Array:
 		return "Content"
 	default:
 		return "Unknown Kind"

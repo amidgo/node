@@ -317,7 +317,7 @@ func (s *scanner) setValueNodeExpecter() {
 		return
 	}
 
-	switch s.currentContentNode.Type() {
+	switch s.currentContentNode.Kind() {
 	case node.Array:
 		s.nextByteExpecter = arrayValueNodeExpecter{}
 	case node.Map:
@@ -381,7 +381,7 @@ func (s *scanner) appendContentableNode(nd node.Node) {
 	if s.node == nil {
 		s.node = nd
 	} else if s.currentContentNode != nil {
-		s.currentContentNode.AppendNode(nd)
+		s.currentContentNode = node.UnsafeAppend(s.currentContentNode, nd)
 	}
 
 	s.currentContentNode = nd
@@ -395,7 +395,7 @@ func (s *scanner) setCurrentContentNodeByteExpecter() {
 		return
 	}
 
-	switch s.currentContentNode.Type() {
+	switch s.currentContentNode.Kind() {
 	case node.Map:
 		s.nextByteExpecter = mapNodeByteExpecter{}
 	case node.Array:
@@ -415,7 +415,7 @@ func (s *scanner) appendValueNode(nd node.Node) error {
 		return err
 	}
 
-	s.currentContentNode.AppendNode(nd)
+	s.currentContentNode = node.UnsafeAppend(s.currentContentNode, nd)
 
 	return nil
 }
@@ -425,7 +425,7 @@ func (s *scanner) validateAppendValueNode(nd node.Node) error {
 		return ErrContentableNodeIsNotInitialized
 	}
 
-	if s.currentContentNode.Type() == node.Map {
+	if s.currentContentNode.Kind() == node.Map {
 		err := s.validateAppendInMapNode(nd)
 		if err != nil {
 			return err
@@ -454,7 +454,7 @@ func (s *scanner) closeArrayNode() error {
 		return ErrContentableNodeIsNotInitialized
 	}
 
-	if s.currentContentNode.Type() != node.Array {
+	if s.currentContentNode.Kind() != node.Array {
 		return ErrWrongCloseArrayNode
 	}
 
@@ -462,7 +462,7 @@ func (s *scanner) closeArrayNode() error {
 }
 
 func (s *scanner) closeMapNode() error {
-	if s.currentContentNode.Type() != node.Map {
+	if s.currentContentNode.Kind() != node.Map {
 		return ErrWrongCloseMapNode
 	}
 
@@ -498,7 +498,7 @@ func (s *scanner) closeContentableNode() error {
 }
 
 func (s *scanner) setCloseContentableNodeNextByteExpecter() {
-	switch s.currentContentNode.Type() {
+	switch s.currentContentNode.Kind() {
 	case node.Map:
 		s.nextByteExpecter = mapValueNodeExpecter{}
 	case node.Array:

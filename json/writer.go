@@ -30,12 +30,21 @@ func makeNodeWriterWithOutput(output io.Writer) *nodeWriter {
 
 func (w *nodeWriter) writeNode(nd node.Node) error {
 	switch nd.Type() {
+	case node.Content:
+		return w.writeContentNode(nd)
+	case node.Value:
+		return w.writeValue(nd)
+	}
+
+	return nil
+}
+
+func (w *nodeWriter) writeContentNode(nd node.Node) error {
+	switch nd.Kind() {
 	case node.Array:
 		return w.writeArray(nd)
 	case node.Map:
 		return w.writeMap(nd)
-	case node.Value:
-		return w.writeValue(nd)
 	}
 
 	return nil

@@ -67,14 +67,23 @@ func EncodeWithIndent(nd node.Node, indent int) ([]byte, error) {
 
 func (e *Encoder) convertNode(nd node.Node) (*yaml.Node, error) {
 	switch nd.Type() {
+	case node.Content:
+		return e.convertContentNode(nd)
+	case node.Value:
+		return e.convertValueNode(nd)
+	default:
+		return nil, UnsupportedNodeTypeError{InputType: nd.Type()}
+	}
+}
+
+func (e *Encoder) convertContentNode(nd node.Node) (*yaml.Node, error) {
+	switch nd.Kind() {
 	case node.Map:
 		return e.convertMapNode(nd)
 	case node.Array:
 		return e.convertArrayNode(nd)
-	case node.Value:
-		return e.convertValueNode(nd)
 	default:
-		return nil, &UnsupportedNodeTypeError{InputType: nd.Type()}
+		return nil, UnsupportedNodeKindError{InputKind: nd.Kind()}
 	}
 }
 

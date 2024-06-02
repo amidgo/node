@@ -3,17 +3,14 @@ package node
 type Type int
 
 const (
-	Map Type = iota
-	Array
+	Content Type = iota + 1
 	Value
 )
 
 func (t Type) String() string {
 	switch t {
-	case Map:
-		return "Map"
-	case Array:
-		return "Array"
+	case Content:
+		return "Content"
 	case Value:
 		return "Value"
 	default:

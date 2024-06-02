@@ -28,14 +28,31 @@ type UnsupportedNodeTypeError struct {
 	InputType node.Type
 }
 
-func (e *UnsupportedNodeTypeError) Error() string {
+func (e UnsupportedNodeTypeError) Error() string {
 	return fmt.Sprintf("unsupported node type: %s", e.InputType)
 }
 
-func (e *UnsupportedNodeTypeError) Is(target error) bool {
+func (e UnsupportedNodeTypeError) Is(target error) bool {
 	unsupportedNodeTypeErr, ok := target.(*UnsupportedNodeTypeError)
 	if ok {
 		return unsupportedNodeTypeErr.InputType == e.InputType
+	}
+
+	return false
+}
+
+type UnsupportedNodeKindError struct {
+	InputKind node.Kind
+}
+
+func (e UnsupportedNodeKindError) Error() string {
+	return fmt.Sprintf("unsupported node kind: %s", e.InputKind)
+}
+
+func (e UnsupportedNodeKindError) Is(target error) bool {
+	unsupportedNodeTypeErr, ok := target.(*UnsupportedNodeKindError)
+	if ok {
+		return unsupportedNodeTypeErr.InputKind == e.InputKind
 	}
 
 	return false
