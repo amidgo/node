@@ -381,7 +381,7 @@ func (s *scanner) appendContentableNode(nd node.Node) {
 	if s.node == nil {
 		s.node = nd
 	} else if s.currentContentNode != nil {
-		s.currentContentNode = node.UnsafeAppend(s.currentContentNode, nd)
+		s.appendNode(nd)
 	}
 
 	s.currentContentNode = nd
@@ -415,9 +415,13 @@ func (s *scanner) appendValueNode(nd node.Node) error {
 		return err
 	}
 
-	s.currentContentNode = node.UnsafeAppend(s.currentContentNode, nd)
+	s.appendNode(nd)
 
 	return nil
+}
+
+func (s *scanner) appendNode(nd node.Node) {
+	node.UnsafeAppend(s.currentContentNode, nd)
 }
 
 func (s *scanner) validateAppendValueNode(nd node.Node) error {
@@ -475,9 +479,6 @@ func (s *scanner) closeMapNode() error {
 
 func (s *scanner) closeContentableNode() error {
 	notClosedContentableNodesCount := len(s.contentableNodes)
-	if notClosedContentableNodesCount < 1 {
-		return ErrNoneContentableNodeLeft
-	}
 
 	switch notClosedContentableNodesCount {
 	case 0:

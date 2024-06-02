@@ -23,17 +23,13 @@ func (n *UnsafeNode) Value() string {
 	return n.NValue
 }
 
-func UnsafeAppend(contentNode, item Node) Node {
-	switch contentNode.Kind() {
-	case Map:
-		return MapNode{
-			content: append(contentNode.Content(), item),
-		}
-	case Array:
-		return ArrayNode{
-			content: append(contentNode.Content(), item),
-		}
-	default:
-		panic("append to value node")
+func UnsafeAppend(contentNode, item Node) {
+	switch contentNode := contentNode.(type) {
+	case *MapNode:
+		contentNode.content = append(contentNode.content, item)
+	case *ArrayNode:
+		contentNode.content = append(contentNode.content, item)
+	case *UnsafeNode:
+		contentNode.NContent = append(contentNode.NContent, item)
 	}
 }
