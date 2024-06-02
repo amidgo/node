@@ -23,7 +23,7 @@ func (n *UnsafeNode) Value() string {
 	return n.NValue
 }
 
-func UnsafeAppend(contentNode, item Node) {
+func Append(contentNode, item Node) {
 	switch contentNode := contentNode.(type) {
 	case *MapNode:
 		contentNode.content = append(contentNode.content, item)

@@ -421,7 +421,7 @@ func (s *scanner) appendValueNode(nd node.Node) error {
 }
 
 func (s *scanner) appendNode(nd node.Node) {
-	node.UnsafeAppend(s.currentContentNode, nd)
+	node.Append(s.currentContentNode, nd)
 }
 
 func (s *scanner) validateAppendValueNode(nd node.Node) error {
