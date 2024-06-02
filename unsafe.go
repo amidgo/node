@@ -23,13 +23,13 @@ func (n *UnsafeNode) Value() string {
 	return n.NValue
 }
 
-func Append(contentNode, item Node) {
+func Append(contentNode Node, items ...Node) {
 	switch contentNode := contentNode.(type) {
 	case *MapNode:
-		contentNode.content = append(contentNode.content, item)
+		contentNode.content = append(contentNode.content, items...)
 	case *ArrayNode:
-		contentNode.content = append(contentNode.content, item)
+		contentNode.content = append(contentNode.content, items...)
 	case *UnsafeNode:
-		contentNode.NContent = append(contentNode.NContent, item)
+		contentNode.NContent = append(contentNode.NContent, items...)
 	}
 }
