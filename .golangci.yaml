@@ -16,7 +16,6 @@ linters:
     - errchkjson
     - errname
     - errorlint
-    - execinquery
     - exportloopref
     - forbidigo
     - forcetypeassert
@@ -32,12 +31,11 @@ linters:
     - gocyclo
     - godot
     - godox
-    - goerr113
+    - err113
     - gofmt
     - gofumpt
     - goheader
     - goimports
-    - gomnd
     - gomoddirectives
     - gomodguard
     - goprintffuncname

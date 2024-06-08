@@ -1,51 +1,62 @@
 package json
 
-import "strconv"
+import (
+	"bytes"
+	"errors"
+	"io"
+	"strconv"
 
-//nolint:cyclop //switch case cyclomatic complexity
-func numberData(data []byte) ([]byte, bool) {
-	var hasE, afterE, hasDot bool
+	"github.com/amidgo/node"
+)
 
-	end := 1
+var ErrNumberNotValid = errors.New("number not valid")
 
-Loop:
-	for _, b := range data[end:] {
-		switch {
-		case b >= '0' && b <= '9':
-			afterE = false
-		case b == '.' && !hasDot:
-			hasDot = true
-		case (b == 'e' || b == 'E') && !hasE:
-			hasE = true
-			hasDot = true
-			afterE = true
-		case (b == '+' || b == '-') && afterE:
-			afterE = false
-		default:
-			if !isTokenEnd(b) {
-				return nil, false
-			}
-
-			break Loop
-		}
-
-		end++
-	}
-
-	return data[:end], true
+type numberScan struct {
+	byteReader io.ByteReader
 }
 
-func isTokenEnd(b byte) bool {
-	return b == ' ' ||
-		b == '\t' ||
-		b == '\r' ||
-		b == '\n' ||
-		b == '[' ||
-		b == ']' ||
-		b == '{' ||
-		b == '}' ||
-		b == ',' ||
-		b == ':'
+func (s *numberScan) Node() (node.Node, error) {
+	data, err := s.numberData()
+	if err != nil {
+		return nil, errors.Join(ErrNumberNotValid, err)
+	}
+
+	i, ok := tryScanInteger(data)
+	if ok {
+		return node.MakeIntegerNode(i), nil
+	}
+
+	f, ok := tryScanFloat(data)
+	if ok {
+		return node.MakeFloatNode(f), nil
+	}
+
+	return nil, ErrNumberNotValid
+}
+
+func (s *numberScan) numberData() (string, error) {
+	data := bytes.Buffer{}
+
+Loop:
+	for {
+		b, err := s.byteReader.ReadByte()
+		switch {
+		case errors.Is(err, io.EOF):
+			break Loop
+		case err != nil:
+			return "", errors.Join(ErrRead, err)
+		}
+
+		switch b {
+		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+			'.', 'e', 'E', '+', '-':
+			data.WriteByte(b)
+		default:
+			return "", NewErrUnexpectedByte(b)
+		}
+	}
+
+	return data.String(), nil
 }
 
 func tryScanInteger(data string) (int64, bool) {

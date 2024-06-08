@@ -28,5 +28,19 @@ func Test_Array_Encode(t *testing.T) {
 			),
 			ExpectedData: "[[],[],[[],[]],{}]",
 		},
+		&jsontest.EncodeTestCase{
+			CaseName: "array with all types of node",
+			Node: node.MakeArrayNodeWithContent(
+				node.EmptyNode{},
+				node.MakeBoolNode(true),
+				node.MakeBoolNode(false),
+				node.MakeIntegerNode(1231323),
+				node.MakeFloatNode(123.1),
+				node.MakeStringNode("Hello World!"),
+				node.MakeArrayNode(),
+				node.MakeMapNode(),
+			),
+			ExpectedData: `[null,true,false,1231323,123.1,"Hello World!",[],{}]`,
+		},
 	)
 }

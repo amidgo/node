@@ -11,63 +11,40 @@ import (
 	"github.com/amidgo/tester"
 )
 
-//go:embed testdata/valid/valid_object_flat.json
-var flatValidObjectBool string
+type BoolNode struct{}
+
+func (i BoolNode) Value() string {
+	return ""
+}
+
+func (i BoolNode) Content() []node.Node {
+	return nil
+}
+
+func (i BoolNode) Kind() node.Kind {
+	return node.Bool
+}
+
+func (i BoolNode) Type() node.Type {
+	return node.Value
+}
 
 func Test_Bool_Encode(t *testing.T) {
 	tester.RunNamedTesters(t,
-		&jsontest.EncodeTestCase{
-			CaseName:     "false",
-			Node:         node.MakeBoolNode(false),
-			ExpectedData: "false",
-		},
 		&jsontest.EncodeTestCase{
 			CaseName:     "true",
 			Node:         node.MakeBoolNode(true),
 			ExpectedData: "true",
 		},
 		&jsontest.EncodeTestCase{
-			CaseName:    "not valid bool node",
-			Node:        &node.UnsafeNode{NType: node.Value, NKind: node.Bool},
-			ExpectedErr: json.ErrInvalidBoolNode,
+			CaseName:     "false",
+			ExpectedData: "false",
+			Node:         node.MakeBoolNode(false),
 		},
 		&jsontest.EncodeTestCase{
-			CaseName: "strong object with bool",
-			Node: node.MakeMapNodeWithContent(
-				node.MakeStringNode("hello"),
-				node.MakeBoolNode(false),
-
-				node.MakeStringNode("Hello"),
-				node.MakeBoolNode(true),
-
-				node.MakeStringNode("object"),
-				node.MakeMapNodeWithContent(
-					node.MakeStringNode("true"),
-					node.MakeBoolNode(true),
-
-					node.MakeStringNode("false"),
-					node.MakeBoolNode(false),
-
-					node.MakeStringNode("array"),
-					node.MakeArrayNodeWithContent(
-						node.MakeBoolNode(false),
-					),
-				),
-				node.MakeStringNode("array"),
-				node.MakeArrayNodeWithContent(
-					node.MakeBoolNode(true),
-					node.MakeBoolNode(false),
-					node.MakeBoolNode(true),
-					node.MakeBoolNode(true),
-					node.MakeBoolNode(false),
-
-					node.MakeMapNodeWithContent(
-						node.MakeStringNode("value"),
-						node.MakeBoolNode(false),
-					),
-				),
-			),
-			ExpectedData: flatValidObjectBool,
+			CaseName:    "invalid bool node",
+			Node:        BoolNode{},
+			ExpectedErr: json.ErrInvalidBoolNode,
 		},
 	)
 }

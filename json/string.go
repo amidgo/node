@@ -1,165 +1,230 @@
 package json
 
 import (
-	"bytes"
 	"errors"
+	"io"
 	"unicode"
 	"unicode/utf16"
 	"unicode/utf8"
+
+	"github.com/amidgo/node"
 )
 
 var (
 	ErrIncorrectEscapedSymbol   = errors.New("incorrect escape symbol \\ at the end of token")
 	ErrIncorrectEscapedBytes    = errors.New("incorrectly escaped bytes")
 	ErrIncorrectEscapedSequence = errors.New("incorrectly escaped \\uXXXX sequence")
+	ErrStringNotValid           = errors.New("string not valid")
 )
 
-func findStringLen(data []byte) (isValid bool, length int) {
+type stringScan struct {
+	byteReader io.ByteReader
+}
+
+func (s *stringScan) Node() (node.Node, error) {
+	data, err := s.stringData()
+	if err != nil {
+		return nil, err
+	}
+
+	sv, err := stringValue(data)
+	if err != nil {
+		return nil, err
+	}
+
+	return node.MakeStringNode(sv), nil
+}
+
+func (s *stringScan) stringData() ([]byte, error) {
+	data := make([]byte, 0)
+
+	var skip bool
+
 	for {
-		idx := bytes.IndexByte(data, '"')
-		if idx == -1 {
-			return false, len(data)
+		b, err := s.byteReader.ReadByte()
+		if err != nil {
+			return nil, errors.Join(ErrRead, err)
 		}
 
-		if idx == 0 || (idx > 0 && data[idx-1] != '\\') {
-			return true, length + idx
+		data = append(data, b)
+
+		if skip {
+			skip = false
+
+			continue
 		}
 
-		// count \\\\\\\ sequences. even number of slashes means quote is not really escaped
-		cnt := 1
-		for idx-cnt-1 >= 0 && data[idx-cnt-1] == '\\' {
-			cnt++
+		switch b {
+		case '\\':
+			skip = true
+		case '"':
+			return data, nil
 		}
-
-		if cnt%2 == 0 {
-			return true, length + idx
-		}
-
-		length += idx + 1
-		data = data[idx+1:]
 	}
 }
 
 func stringValue(data []byte) (string, error) {
-	res, err := unescapeStringToken(data)
-	if err != nil {
-		return "", err
+	res, ok := unquoteBytes(data)
+	if !ok {
+		return "", ErrStringNotValid
 	}
 
 	return string(res), nil
 }
 
-func unescapeStringToken(data []byte) ([]byte, error) {
-	res := data
+//nolint:funlen,gocognit // function from go sources
+func unquoteBytes(s []byte) (t []byte, ok bool) {
+	if len(s) < 1 || s[len(s)-1] != '"' {
+		return t, ok
+	}
 
-	var unescapedData []byte
+	s = s[:len(s)-1]
 
-	for {
-		i := bytes.IndexByte(data, '\\')
-		if i == -1 {
+	// Check for unusual characters. If there are none,
+	// then no unquoting is needed, so return a slice of the
+	// original bytes.
+	r := 0
+	for r < len(s) {
+		c := s[r]
+		if c == '\\' || c == '"' || c < ' ' {
 			break
 		}
 
-		escapedRune, escapedBytes, err := decodeEscape(data[i:])
-		if err != nil {
-			return nil, err
+		if c < utf8.RuneSelf {
+			r++
+
+			continue
 		}
 
-		if unescapedData == nil {
-			unescapedData = make([]byte, 0, len(res))
+		rr, size := utf8.DecodeRune(s[r:])
+		if rr == utf8.RuneError && size == 1 {
+			break
 		}
 
-		var d [4]byte
-		s := utf8.EncodeRune(d[:], escapedRune)
-
-		unescapedData = append(unescapedData, data[:i]...)
-		unescapedData = append(unescapedData, d[:s]...)
-
-		data = data[i+escapedBytes:]
+		r += size
 	}
 
-	if unescapedData != nil {
-		//nolint:gocritic // append to result with if statement
-		res = append(unescapedData, data...)
+	if r == len(s) {
+		return s, true
 	}
 
-	return res, nil
-}
+	b := make([]byte, len(s)+2*utf8.UTFMax)
+	w := copy(b, s[0:r])
 
-//nolint:gomnd // 2 bytes is default bytes processed size
-func decodeEscape(data []byte) (decoded rune, bytesProcessed int, err error) {
-	if len(data) < 2 {
-		return 0, 0, ErrIncorrectEscapedSymbol
-	}
+	for r < len(s) {
+		// Out of room? Can only happen if s is full of
+		// malformed UTF-8 and we're replacing each
+		// byte with RuneError.
+		if w >= len(b)-2*utf8.UTFMax {
+			nb := make([]byte, (len(b)+utf8.UTFMax)*2)
+			copy(nb, b[0:w])
+			b = nb
+		}
 
-	c := data[1]
-	switch c {
-	case '"', '/', '\\':
-		return rune(c), 2, nil
-	case 'b':
-		return '\b', 2, nil
-	case 'f':
-		return '\f', 2, nil
-	case 'n':
-		return '\n', 2, nil
-	case 'r':
-		return '\r', 2, nil
-	case 't':
-		return '\t', 2, nil
-	case 'u':
-		return decodeUnicodeEscapeData(data)
-	}
+		switch c := s[r]; {
+		case c == '\\':
+			r++
+			if r >= len(s) {
+				return t, ok
+			}
 
-	return 0, 0, ErrIncorrectEscapedBytes
-}
+			switch s[r] {
+			default:
+				return t, ok
+			case '"', '\\', '/', '\'':
+				b[w] = s[r]
+				r++
+				w++
+			case 'b':
+				b[w] = '\b'
+				r++
+				w++
+			case 'f':
+				b[w] = '\f'
+				r++
+				w++
+			case 'n':
+				b[w] = '\n'
+				r++
+				w++
+			case 'r':
+				b[w] = '\r'
+				r++
+				w++
+			case 't':
+				b[w] = '\t'
+				r++
+				w++
+			case 'u':
+				r--
+				rr := getu4(s[r:])
 
-func decodeUnicodeEscapeData(data []byte) (decoded rune, bytesProcessed int, err error) {
-	rr := getu4(data)
-	if rr < 0 {
-		return 0, 0, ErrIncorrectEscapedSequence
-	}
+				if rr < 0 {
+					return t, ok
+				}
 
-	read := 6
-	if utf16.IsSurrogate(rr) {
-		rr1 := getu4(data[read:])
-		if dec := utf16.DecodeRune(rr, rr1); dec != unicode.ReplacementChar {
-			read += 6
-			rr = dec
-		} else {
-			rr = unicode.ReplacementChar
+				r += 6
+
+				if utf16.IsSurrogate(rr) {
+					rr1 := getu4(s[r:])
+					if dec := utf16.DecodeRune(rr, rr1); dec != unicode.ReplacementChar {
+						// A valid pair; consume.
+						r += 6
+						w += utf8.EncodeRune(b[w:], dec)
+
+						break
+					}
+					// Invalid surrogate; fall back to replacement rune.
+					rr = unicode.ReplacementChar
+				}
+
+				w += utf8.EncodeRune(b[w:], rr)
+			}
+
+		// Quote, control characters are invalid.
+		case c == '"', c < ' ':
+			return t, ok
+
+		// ASCII
+		case c < utf8.RuneSelf:
+			b[w] = c
+			r++
+			w++
+
+		// Coerce to well-formed UTF-8.
+		default:
+			rr, size := utf8.DecodeRune(s[r:])
+			r += size
+			w += utf8.EncodeRune(b[w:], rr)
 		}
 	}
 
-	return rr, read, nil
+	return b[0:w], true
 }
 
-//nolint:gomnd //calculated operations with bytes
+// getu4 decodes \uXXXX from the beginning of s, returning the hex value,
+// or it returns -1.
 func getu4(s []byte) rune {
 	if len(s) < 6 || s[0] != '\\' || s[1] != 'u' {
 		return -1
 	}
 
-	var val rune
+	var r rune
 
-	for i := 2; i < len(s) && i < 6; i++ {
-		var v byte
-
-		c := s[i]
-
-		switch c {
-		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-			v = c - '0'
-		case 'a', 'b', 'c', 'd', 'e', 'f':
-			v = c - 'a' + 10
-		case 'A', 'B', 'C', 'D', 'E', 'F':
-			v = c - 'A' + 10
+	for _, c := range s[2:6] {
+		switch {
+		case '0' <= c && c <= '9':
+			c -= '0'
+		case 'a' <= c && c <= 'f':
+			c = c - 'a' + 10
+		case 'A' <= c && c <= 'F':
+			c = c - 'A' + 10
 		default:
 			return -1
 		}
 
-		val <<= 4
-		val |= rune(v)
+		r = r*16 + rune(c)
 	}
 
-	return val
+	return r
 }

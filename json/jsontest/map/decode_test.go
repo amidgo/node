@@ -14,22 +14,22 @@ func Test_Map_Decode(t *testing.T) {
 		&jsontest.DecodeTestCase{
 			CaseName:    "non closed array",
 			Data:        `{"hello":{}`,
-			ExpectedErr: json.ErrContentableNodeNotClosed,
+			ExpectedErr: json.ErrMapNotClosed,
 		},
 		&jsontest.DecodeTestCase{
 			CaseName:    "dot in map value",
 			Data:        `{"hello":.}`,
-			ExpectedErr: json.ErrUnexpectedByte,
+			ExpectedErr: json.NewErrUnexpectedByte('.'),
 		},
 		&jsontest.DecodeTestCase{
 			CaseName:    "',' in map key",
 			Data:        "{,}",
-			ExpectedErr: json.ErrUnexpectedByte,
+			ExpectedErr: json.NewErrUnexpectedByte(','),
 		},
 		&jsontest.DecodeTestCase{
 			CaseName:    "dot in map key",
 			Data:        "{.}",
-			ExpectedErr: json.ErrUnexpectedByte,
+			ExpectedErr: json.NewErrUnexpectedByte('.'),
 		},
 		&jsontest.DecodeTestCase{
 			CaseName:     "empty map",

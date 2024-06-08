@@ -10,68 +10,34 @@ import (
 	"github.com/amidgo/tester"
 )
 
-//go:embed testdata/valid/valid_object.json
-var validNull string
-
-func Test_Null_Decode_Success(t *testing.T) {
-	tester.RunNamedTesters(t,
-		&jsontest.DecodeTestCase{
-			CaseName: "valid",
-			Data:     validNull,
-			ExpectedNode: node.MakeMapNodeWithContent(
-				node.MakeStringNode("null"),
-				node.EmptyNode{},
-
-				node.MakeStringNode("array"),
-				node.MakeArrayNodeWithContent(
-					node.EmptyNode{},
-					node.EmptyNode{},
-					node.EmptyNode{},
-					node.EmptyNode{},
-					node.MakeMapNodeWithContent(
-						node.MakeStringNode("key"),
-						node.EmptyNode{},
-					),
-				),
-				node.MakeStringNode("object"),
-				node.MakeMapNodeWithContent(
-					node.MakeStringNode("value"),
-					node.EmptyNode{},
-				),
-			),
-		},
-	)
-}
-
-func Test_Null_Decode_Failure(t *testing.T) {
+func Test_Decode(t *testing.T) {
 	tester.RunNamedTesters(t,
 		&jsontest.DecodeTestCase{
 			CaseName:    "n",
-			Data:        `[n]`,
+			Data:        `n`,
 			ExpectedErr: json.ErrNullNotValid,
 		},
 		&jsontest.DecodeTestCase{
 			CaseName:    "nn",
-			Data:        `[nn]`,
+			Data:        `nn`,
 			ExpectedErr: json.ErrNullNotValid,
 		},
 
 		&jsontest.DecodeTestCase{
 			CaseName:    "nnn",
-			Data:        `[nnn]`,
+			Data:        `nnn`,
 			ExpectedErr: json.ErrNullNotValid,
 		},
 
 		&jsontest.DecodeTestCase{
 			CaseName:    "nnnn",
-			Data:        `[nnnn]`,
+			Data:        `nnnn`,
 			ExpectedErr: json.ErrNullNotValid,
 		},
-
 		&jsontest.DecodeTestCase{
 			CaseName:     "null",
-			Data:         `[null]`,
-			ExpectedNode: node.MakeArrayNodeWithContent(node.EmptyNode{}),
+			Data:         `null`,
+			ExpectedNode: node.EmptyNode{},
 		},
 	)
 }

@@ -14,12 +14,12 @@ func Test_Array_Decode(t *testing.T) {
 		&jsontest.DecodeTestCase{
 			CaseName:    "non closed array",
 			Data:        "[[]",
-			ExpectedErr: json.ErrContentableNodeNotClosed,
+			ExpectedErr: json.ErrArrayNotClosed,
 		},
 		&jsontest.DecodeTestCase{
 			CaseName:    "single dot in array",
 			Data:        "[.]",
-			ExpectedErr: json.ErrUnexpectedByte,
+			ExpectedErr: json.NewErrUnexpectedByte('.'),
 		},
 		&jsontest.DecodeTestCase{
 			CaseName:     "empty array",
@@ -36,6 +36,20 @@ func Test_Array_Decode(t *testing.T) {
 					node.MakeArrayNode(),
 					node.MakeArrayNode(),
 				),
+			),
+		},
+		&jsontest.DecodeTestCase{
+			CaseName: "array with all types of node",
+			Data:     `[null,true,false,1231323,123.1,"Hello World!",[],{}]`,
+			ExpectedNode: node.MakeArrayNodeWithContent(
+				node.EmptyNode{},
+				node.MakeBoolNode(true),
+				node.MakeBoolNode(false),
+				node.MakeIntegerNode(1231323),
+				node.MakeFloatNode(123.1),
+				node.MakeStringNode("Hello World!"),
+				node.MakeArrayNode(),
+				node.MakeMapNode(),
 			),
 		},
 	)

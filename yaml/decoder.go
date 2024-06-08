@@ -70,7 +70,7 @@ func (d *Decoder) convertYamlNode(ynd *yaml.Node) (node.Node, error) {
 }
 
 func (d *Decoder) convertMappingYamlNode(ynd *yaml.Node) (node.Node, error) {
-	var mappingNode node.Node = node.MakeMapNode()
+	mappingNode := node.MakeMapNode()
 
 	iter := NewYamlNodeIterator(ynd.Content)
 
@@ -94,7 +94,7 @@ func (d *Decoder) convertMappingYamlNode(ynd *yaml.Node) (node.Node, error) {
 }
 
 func (d *Decoder) convertSequenceYamlNode(ynd *yaml.Node) (node.Node, error) {
-	var arrayNode node.Node = node.MakeArrayNode()
+	arrayNode := node.MakeArrayNode()
 
 	for _, item := range ynd.Content {
 		nd, err := d.convertYamlNode(item)
@@ -105,7 +105,7 @@ func (d *Decoder) convertSequenceYamlNode(ynd *yaml.Node) (node.Node, error) {
 		arrayNode = node.ArrayAppend(arrayNode, nd)
 	}
 
-	return &YamlStyleNode{Node: arrayNode, YamlStyle: ynd.Style}, nil
+	return &StyleNode{Node: arrayNode, YamlStyle: ynd.Style}, nil
 }
 
 const (
@@ -141,14 +141,14 @@ func convertScalarYamlNode(ynd *yaml.Node) node.Node {
 }
 
 func stringNode(value string, style yaml.Style) node.Node {
-	return &YamlStyleNode{Node: node.MakeStringNode(value), YamlStyle: style}
+	return &StyleNode{Node: node.MakeStringNode(value), YamlStyle: style}
 }
 
-type YamlStyleNode struct {
+type StyleNode struct {
 	node.Node
 	YamlStyle yaml.Style
 }
 
-func (y *YamlStyleNode) Style() yaml.Style {
+func (y *StyleNode) Style() yaml.Style {
 	return y.YamlStyle
 }

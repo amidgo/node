@@ -41,25 +41,25 @@ func (e *Encoder) EncodeTo(w io.Writer, nd node.Node) error {
 }
 
 func (e *Encoder) encodeIndent(output io.Writer, nd node.Node) error {
-	notIndentJson := &bytes.Buffer{}
+	notIndentJSON := &bytes.Buffer{}
 
-	writer := makeNodeWriterWithOutput(notIndentJson)
+	writer := makeNodeWriterWithOutput(notIndentJSON)
 
 	err := writer.writeNode(nd)
 	if err != nil {
 		return err
 	}
 
-	indentedJson := &bytes.Buffer{}
+	indentedJSON := &bytes.Buffer{}
 
 	bufOutput, ok := output.(*bytes.Buffer)
 	if ok {
-		indentedJson = bufOutput
+		indentedJSON = bufOutput
 	}
 
 	err = json.Indent(
-		indentedJson,
-		notIndentJson.Bytes(), "",
+		indentedJSON,
+		notIndentJSON.Bytes(), "",
 		strings.Repeat(" ", e.Indent),
 	)
 	if err != nil {
@@ -67,7 +67,7 @@ func (e *Encoder) encodeIndent(output io.Writer, nd node.Node) error {
 	}
 
 	if !ok {
-		_, err := indentedJson.WriteTo(output)
+		_, err := indentedJSON.WriteTo(output)
 		if err != nil {
 			return fmt.Errorf("write indented to output, %w", err)
 		}

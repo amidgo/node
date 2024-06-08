@@ -45,68 +45,68 @@ func Test_DecodeEmpty(t *testing.T) {
 			Decoder:  new(yaml.Decoder),
 			Input:    nullData,
 			ExpectedNode: node.MakeMapNodeWithContent(
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node: node.MakeStringNode("emptyKey"),
 				},
 				node.EmptyNode{},
 
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node: node.MakeStringNode("nullKey"),
 				},
 				node.EmptyNode{},
 
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node: node.MakeStringNode("singleCharNullKey"),
 				},
 				node.EmptyNode{},
 
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node: node.MakeStringNode("singleQuotedEmptyKey"),
 				},
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node:      node.MakeStringNode(""),
 					YamlStyle: pkgyaml.SingleQuotedStyle,
 				},
 
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node: node.MakeStringNode("singleQuotedNullKey"),
 				},
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node:      node.MakeStringNode("null"),
 					YamlStyle: pkgyaml.SingleQuotedStyle,
 				},
 
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node: node.MakeStringNode("singleQuotedSingleCharNullKey"),
 				},
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node:      node.MakeStringNode("~"),
 					YamlStyle: pkgyaml.SingleQuotedStyle,
 				},
 
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node: node.MakeStringNode("doubleQuotedEmptyKey"),
 					// YamlStyle: pkgyaml.TaggedStyle,
 				},
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node:      node.MakeStringNode(""),
 					YamlStyle: pkgyaml.DoubleQuotedStyle,
 				},
 
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node: node.MakeStringNode("doubleQuotedNullKey"),
 					// YamlStyle: pkgyaml.TaggedStyle,
 				},
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node:      node.MakeStringNode("null"),
 					YamlStyle: pkgyaml.DoubleQuotedStyle,
 				},
 
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node: node.MakeStringNode("doubleQuotedSingleCharNullKey"),
 					// YamlStyle: pkgyaml.TaggedStyle,
 				},
-				&yaml.YamlStyleNode{
+				&yaml.StyleNode{
 					Node:      node.MakeStringNode("~"),
 					YamlStyle: pkgyaml.DoubleQuotedStyle,
 				},
@@ -122,16 +122,16 @@ func Test_DecodeValueKind(t *testing.T) {
 			Decoder:  new(yaml.Decoder),
 			Input:    valueData,
 			ExpectedNode: node.MakeMapNodeWithContent(
-				&yaml.YamlStyleNode{Node: node.MakeStringNode("trueValue")},
+				&yaml.StyleNode{Node: node.MakeStringNode("trueValue")},
 				node.MakeBoolNode(true),
-				&yaml.YamlStyleNode{Node: node.MakeStringNode("falseValue")},
+				&yaml.StyleNode{Node: node.MakeStringNode("falseValue")},
 				node.MakeBoolNode(false),
-				&yaml.YamlStyleNode{Node: node.MakeStringNode("integerValue")},
+				&yaml.StyleNode{Node: node.MakeStringNode("integerValue")},
 				node.MakeIntegerNode(1008001),
-				&yaml.YamlStyleNode{Node: node.MakeStringNode("floatValue")},
+				&yaml.StyleNode{Node: node.MakeStringNode("floatValue")},
 				node.MakeFloatNode(3.1),
-				&yaml.YamlStyleNode{Node: node.MakeStringNode("stringValue")},
-				&yaml.YamlStyleNode{Node: node.MakeStringNode("aboba")},
+				&yaml.StyleNode{Node: node.MakeStringNode("stringValue")},
+				&yaml.StyleNode{Node: node.MakeStringNode("aboba")},
 			),
 		},
 	)

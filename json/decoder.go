@@ -1,9 +1,10 @@
 package json
 
 import (
-	"errors"
-	"fmt"
+	"bufio"
+	"bytes"
 	"io"
+	"strings"
 
 	"github.com/amidgo/node"
 )
@@ -11,28 +12,23 @@ import (
 type Decoder struct{}
 
 func (d *Decoder) Decode(data []byte) (node.Node, error) {
-	scanner := newScanner(data)
-	for scanner.HasNext() {
-		err := scanner.Scan()
-		if errors.Is(err, io.EOF) {
-			break
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return scanner.Node(), nil
+	return d.DecodeFrom(bytes.NewBuffer(data))
 }
 
 func (d *Decoder) DecodeFrom(r io.Reader) (node.Node, error) {
-	data, err := io.ReadAll(r)
-	if err != nil {
-		return nil, fmt.Errorf("read err: %w", err)
+	var reader Reader
+	switch r := r.(type) {
+	case *bytes.Buffer:
+		reader = r
+	case *strings.Reader:
+		reader = r
+	default:
+		reader = bufio.NewReader(r)
 	}
 
-	return d.Decode(data)
+	scan := newScan(reader)
+
+	return scan.Node()
 }
 
 func Decode(data []byte) (node.Node, error) {

@@ -10,104 +10,37 @@ import (
 	"github.com/amidgo/tester"
 )
 
-var (
-	//go:embed testdata/valid/string_array.json
-	stringArrayJSON string
-	//go:embed testdata/valid/string_single.json
-	stringSingleJSON string
-	//go:embed testdata/not_valid/string_array_invalid.txt
-	stringArrayUnexpectedByteJSON string
-	//go:embed testdata/not_valid/string_duo.txt
-	duoContentableNodeIsNotInitializedString string
-	//go:embed testdata/not_valid/string_invalid_quote.txt
-	invalidQuoteString string
-	//go:embed testdata/not_valid/non_string_key.txt
-	nonStringKey string
-)
-
-//nolint:dupl //it is not duplicate
-func Test_String_Decode_Success(t *testing.T) {
+func Test_Decode(t *testing.T) {
 	tester.RunNamedTesters(t,
 		&jsontest.DecodeTestCase{
-			CaseName: "string strong object case",
-			Data:     stringArrayJSON,
-			ExpectedNode: node.MakeArrayNodeWithContent(
-				node.MakeMapNodeWithContent(
-					node.MakeStringNode("name"),
-					node.MakeStringNode("Dima"),
-					node.MakeStringNode("birthdate"),
-					node.MakeStringNode("2004-11-25"),
-				),
-				node.MakeMapNodeWithContent(
-					node.MakeStringNode("name"),
-					node.MakeStringNode("Vika"),
-					node.MakeStringNode("birthdate"),
-					node.MakeStringNode("2009-05-28"),
-				),
-
-				node.MakeMapNodeWithContent(
-					node.MakeStringNode("name"),
-					node.MakeStringNode("иван"),
-					node.MakeStringNode("birthdate"),
-					node.MakeStringNode("иван"),
-				),
-
-				node.MakeMapNodeWithContent(
-					node.MakeStringNode("name"),
-					node.MakeStringNode("андрей"),
-					node.MakeStringNode("birthdate"),
-					node.MakeStringNode("1973-04-25"),
-				),
-
-				node.MakeMapNodeWithContent(
-					node.MakeStringNode("user"),
-					node.MakeMapNodeWithContent(
-						node.MakeStringNode("name"),
-						node.MakeStringNode("андрей"),
-						node.MakeStringNode("birthdate"),
-						node.MakeStringNode("1973-04-25"),
-					),
-				),
-
-				node.MakeStringNode("hello"),
-				node.MakeStringNode("aboba"),
-
-				node.MakeArrayNodeWithContent(
-					node.MakeStringNode("hello"),
-					node.MakeStringNode("aboba"),
-				),
-			),
-		},
-		&jsontest.DecodeTestCase{
 			CaseName:     "single string",
-			Data:         stringSingleJSON,
+			Data:         `"Hello World!"`,
 			ExpectedNode: node.MakeStringNode("Hello World!"),
 		},
-	)
-}
-
-func Test_String_Decode_Failure(t *testing.T) {
-	tester.RunNamedTesters(
-		t,
 		&jsontest.DecodeTestCase{
-			CaseName:    "not valid array",
-			Data:        stringArrayUnexpectedByteJSON,
-			ExpectedErr: json.ErrUnexpectedByte,
+			CaseName:     "single quoted string",
+			Data:         `"'Hello World'"`,
+			ExpectedNode: node.MakeStringNode(`'Hello World'`),
 		},
 		&jsontest.DecodeTestCase{
-			CaseName:    "not valid duo",
-			Data:        duoContentableNodeIsNotInitializedString,
-			ExpectedErr: json.ErrUnexpectedByte,
+			CaseName:     "double quoted string",
+			Data:         `"\"Hello World!\""`,
+			ExpectedNode: node.MakeStringNode(`"Hello World!"`),
 		},
 		&jsontest.DecodeTestCase{
-			CaseName:    "invalid quote",
-			Data:        invalidQuoteString,
-			ExpectedErr: json.ErrUnexpectedByte,
+			CaseName:     "unicode string",
+			Data:         `"\u0048\u0065\u006C\u006C\u006F\u0020\u0057\u006F\u0072\u006C\u0064\u0021"`,
+			ExpectedNode: node.MakeStringNode("Hello World!"),
 		},
 		&jsontest.DecodeTestCase{
-			CaseName:    "non string key in map",
-			Data:        nonStringKey,
-			ExpectedErr: json.ErrMissingProperty,
+			CaseName:    "invalid string",
+			Data:        `Hello World!"`,
+			ExpectedErr: json.NewErrUnexpectedByte('H'),
+		},
+		&jsontest.DecodeTestCase{
+			CaseName:    "invalid unicode string",
+			Data:        `"\u08\u0065\u006C\u006C\u006F\u0020\u0057\u006F\u0072\u006C\u0064\u0021"`,
+			ExpectedErr: json.ErrStringNotValid,
 		},
 	)
 }

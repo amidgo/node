@@ -2,7 +2,6 @@ package test_test
 
 import (
 	_ "embed"
-	"fmt"
 	"testing"
 
 	"github.com/amidgo/node/yaml"
@@ -27,7 +26,7 @@ type DecEncTester struct {
 }
 
 func (de *DecEncTester) Name() string {
-	return fmt.Sprintf("decenc tester %s", de.CaseName)
+	return "decenc tester " + de.CaseName
 }
 
 func (de *DecEncTester) Test(t *testing.T) {
@@ -61,5 +60,4 @@ func Test_DecEnc(t *testing.T) {
 			Input:    swaggerData,
 		},
 	)
-
 }
