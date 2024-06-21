@@ -28,3 +28,34 @@ func (i *MapNodeIterator) Next() (key, value Node) {
 
 	return key, value
 }
+
+type Iterator interface {
+	HasNext() bool
+	Next() (key, value Node)
+}
+
+type IndexedIterator struct {
+	iter     Iterator
+	keyIndex int
+}
+
+func NewIndexedIterator(iter Iterator) *IndexedIterator {
+	return &IndexedIterator{
+		iter:     iter,
+		keyIndex: -2,
+	}
+}
+
+func (i *IndexedIterator) HasNext() bool {
+	return i.iter.HasNext()
+}
+
+func (i *IndexedIterator) Next() (key, value Node) {
+	i.keyIndex += 2
+
+	return i.iter.Next()
+}
+
+func (i *IndexedIterator) Index() int {
+	return i.keyIndex
+}

@@ -45,11 +45,34 @@ func (n MapNode) Value() string {
 }
 
 func MapAppend(mapNode MapNode, key, value Node) MapNode {
-	if mapNode.Kind() != Map {
-		panic("map append to invalid node " + mapNode.Kind().String())
-	}
-
 	return MapNode{
 		content: append(mapNode.Content(), key, value),
 	}
+}
+
+func MapSet(mapNode MapNode, key, value Node) MapNode {
+	iter := NewIndexedIterator(MakeMapNodeIterator(mapNode.Content()))
+
+	for iter.HasNext() {
+		nextKey, _ := iter.Next()
+		if nextKey != key {
+			continue
+		}
+
+		if iter.Index() == len(mapNode.Content())-1 {
+			return MapNode{
+				content: append(mapNode.Content(), value),
+			}
+		}
+
+		mapNode.Content()[iter.Index()+1] = value
+
+		return mapNode
+	}
+
+	return MapAppend(mapNode, key, value)
+}
+
+func MapMerge(mapNode MapNode) {
+
 }

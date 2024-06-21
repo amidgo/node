@@ -8,14 +8,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type MapNodeIteratorTest struct {
+	CaseName        string
+	MapNodeContent  []node.Node
+	ExpectedContent []node.Node
+}
+
+func (c *MapNodeIteratorTest) Name() string {
+	return c.CaseName
+}
+
+func (c *MapNodeIteratorTest) Test(t *testing.T) {
+	content := make([]node.Node, 0, len(c.ExpectedContent))
+
+	iterator := node.MakeMapNodeIterator(c.MapNodeContent)
+	for iterator.HasNext() {
+		key, value := iterator.Next()
+		content = append(content, key, value)
+	}
+
+	assert.Equal(t, c.ExpectedContent, content)
+}
+
 func Test_MapNodeInterator(t *testing.T) {
 	tester.RunNamedTesters(t,
-		&MapNodeIteratorCase{
+		&MapNodeIteratorTest{
 			CaseName:        "empty content",
 			MapNodeContent:  []node.Node{},
 			ExpectedContent: []node.Node{},
 		},
-		&MapNodeIteratorCase{
+		&MapNodeIteratorTest{
 			CaseName: "event content length",
 			MapNodeContent: []node.Node{
 				node.MakeStringNode("sdkfaf"),
@@ -32,7 +54,7 @@ func Test_MapNodeInterator(t *testing.T) {
 				node.MakeStringNode("sdksdasdkfglafsdfkfaf"),
 			},
 		},
-		&MapNodeIteratorCase{
+		&MapNodeIteratorTest{
 			CaseName: "odd content length",
 			MapNodeContent: []node.Node{
 				node.MakeStringNode("sdkfaf"),
@@ -51,24 +73,52 @@ func Test_MapNodeInterator(t *testing.T) {
 	)
 }
 
-type MapNodeIteratorCase struct {
-	CaseName        string
-	MapNodeContent  []node.Node
-	ExpectedContent []node.Node
+type IndexedIteratorTest struct {
+	CaseName      string
+	Iterator      node.Iterator
+	Iterations    int
+	ExpectedIndex int
 }
 
-func (c *MapNodeIteratorCase) Name() string {
-	return c.CaseName
+func (i *IndexedIteratorTest) Name() string {
+	return i.CaseName
 }
 
-func (c *MapNodeIteratorCase) Test(t *testing.T) {
-	content := make([]node.Node, 0, len(c.ExpectedContent))
+func (i *IndexedIteratorTest) Test(t *testing.T) {
+	iter := node.NewIndexedIterator(i.Iterator)
 
-	iterator := node.MakeMapNodeIterator(c.MapNodeContent)
-	for iterator.HasNext() {
-		key, value := iterator.Next()
-		content = append(content, key, value)
+	for range i.Iterations {
+		iter.Next()
 	}
 
-	assert.Equal(t, c.ExpectedContent, content)
+	assert.Equal(t, i.ExpectedIndex, iter.Index())
+}
+
+func Test_IndexedIterator(t *testing.T) {
+	tester.RunNamedTesters(t,
+		&IndexedIteratorTest{
+			CaseName:      "empty iterator",
+			Iterator:      node.MakeMapNodeIterator([]node.Node{}),
+			Iterations:    0,
+			ExpectedIndex: -2,
+		},
+		&IndexedIteratorTest{
+			CaseName: "iterator one iteration",
+			Iterator: node.MakeMapNodeIterator([]node.Node{
+				node.MakeStringNode("key"),
+				node.MakeMapNode(),
+			}),
+			Iterations:    1,
+			ExpectedIndex: 0,
+		},
+		&IndexedIteratorTest{
+			CaseName: "iterator one iteration",
+			Iterator: node.MakeMapNodeIterator([]node.Node{
+				node.MakeStringNode("key"),
+				node.MakeMapNode(),
+			}),
+			Iterations:    1,
+			ExpectedIndex: 0,
+		},
+	)
 }
