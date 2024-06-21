@@ -106,3 +106,99 @@ func Test_MapSet(t *testing.T) {
 		},
 	)
 }
+
+type MapSearchByStringKeyTest struct {
+	CaseName      string
+	MapNode       node.MapNode
+	SearchKey     string
+	ExpectedIndex int
+}
+
+func (m *MapSearchByStringKeyTest) Name() string {
+	return m.CaseName
+}
+
+func (m *MapSearchByStringKeyTest) Test(t *testing.T) {
+	index := node.MapSearchByStringKey(m.MapNode, m.SearchKey)
+
+	assert.Equal(t, m.ExpectedIndex, index)
+}
+
+func Test_MapSearchByStringKey(t *testing.T) {
+	tester.RunNamedTesters(t,
+		&MapSearchByStringKeyTest{
+			CaseName:      "empty map node",
+			MapNode:       node.MakeMapNode(),
+			SearchKey:     "any",
+			ExpectedIndex: -1,
+		},
+		&MapSearchByStringKeyTest{
+			CaseName: "not exists key",
+			MapNode: node.MakeMapNodeWithContent(
+				node.MakeStringNode("hello"),
+				node.MakeBoolNode(false),
+				node.MakeStringNode("aboba"),
+				node.MakeBoolNode(true),
+				node.MakeStringNode("hehe"),
+				node.MakeIntegerNode(1),
+			),
+			SearchKey:     "any",
+			ExpectedIndex: -1,
+		},
+		&MapSearchByStringKeyTest{
+			CaseName: "exists key",
+			MapNode: node.MakeMapNodeWithContent(
+				node.MakeStringNode("hello"),
+				node.MakeBoolNode(false),
+				node.MakeStringNode("aboba"),
+				node.MakeBoolNode(true),
+				node.MakeStringNode("hehe"),
+				node.MakeIntegerNode(1),
+			),
+			SearchKey:     "aboba",
+			ExpectedIndex: 3,
+		},
+		&MapSearchByStringKeyTest{
+			CaseName: "exists key",
+			MapNode: node.MakeMapNodeWithContent(
+				node.MakeStringNode("hello"),
+				node.MakeBoolNode(false),
+				node.MakeStringNode("aboba"),
+				node.MakeBoolNode(true),
+				node.MakeStringNode("true"),
+				node.MakeIntegerNode(1),
+				node.MakeStringNode("hehepopa"),
+			),
+			SearchKey:     "hehepopa",
+			ExpectedIndex: 7,
+		},
+		&MapSearchByStringKeyTest{
+			CaseName: "exists key",
+			MapNode: node.MakeMapNodeWithContent(
+				node.MakeStringNode("hello"),
+				node.MakeBoolNode(false),
+				node.MakeStringNode("aboba"),
+				node.MakeBoolNode(true),
+				node.MakeStringNode("true"),
+				node.MakeIntegerNode(1),
+				node.MakeStringNode("hehepopa"),
+			),
+			SearchKey:     "true",
+			ExpectedIndex: 5,
+		},
+		&MapSearchByStringKeyTest{
+			CaseName: "exists key by wrong kind",
+			MapNode: node.MakeMapNodeWithContent(
+				node.MakeStringNode("hello"),
+				node.MakeBoolNode(false),
+				node.MakeStringNode("aboba"),
+				node.MakeBoolNode(true),
+				node.MakeBoolNode(true),
+				node.MakeIntegerNode(1),
+				node.MakeStringNode("hehepopa"),
+			),
+			SearchKey:     "true",
+			ExpectedIndex: -1,
+		},
+	)
+}

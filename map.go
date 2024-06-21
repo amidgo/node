@@ -83,3 +83,23 @@ func MapRound(mapNode MapNode, value Node) MapNode {
 		content: append(mapNode.Content(), value),
 	}
 }
+
+func MapSearchByStringKey(mapNode MapNode, searchKey string) int {
+	iter := NewIndexedIterator(MakeMapNodeIterator(mapNode.Content()))
+
+	for iter.HasNext() {
+		key, _ := iter.Next()
+
+		if key.Kind() != String {
+			continue
+		}
+
+		if key.Value() != searchKey {
+			continue
+		}
+
+		return iter.Index() + 1
+	}
+
+	return -1
+}
