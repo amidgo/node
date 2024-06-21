@@ -73,6 +73,13 @@ func MapSet(mapNode MapNode, key, value Node) MapNode {
 	return MapAppend(mapNode, key, value)
 }
 
-func MapMerge(mapNode MapNode) {
+// if len(mapNode.Content()) % 2 == 1, append value node to Map and return them
+func MapRound(mapNode MapNode, value Node) MapNode {
+	if len(mapNode.Content())%2 == 0 {
+		return mapNode
+	}
 
+	return MapNode{
+		content: append(mapNode.Content(), value),
+	}
 }
