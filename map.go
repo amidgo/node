@@ -16,12 +16,6 @@ func MakeMapNodeWithContent(content ...Node) MapNode {
 	}
 }
 
-func MakeMapNodeWithSlice(content []Node) MapNode {
-	return MapNode{
-		content: content,
-	}
-}
-
 func MakeMapNodeWithCap(capacity int) MapNode {
 	return MapNode{
 		content: make([]Node, 0, capacity),

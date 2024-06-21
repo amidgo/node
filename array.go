@@ -16,12 +16,6 @@ func MakeArrayNodeWithContent(content ...Node) ArrayNode {
 	}
 }
 
-func MakeArrayNodeWithSlice(slice []Node) ArrayNode {
-	return ArrayNode{
-		content: slice,
-	}
-}
-
 func MakeArrayNodeWithCap(capacity int) ArrayNode {
 	return ArrayNode{
 		content: make([]Node, 0, capacity),
