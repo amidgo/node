@@ -4,7 +4,12 @@ type MapNode struct {
 	content []Node
 }
 
+// panics on len(content) % 2 == 1
 func MakeMapNode(content ...Node) MapNode {
+	if len(content)%2 == 1 {
+		panic("invalid content size")
+	}
+
 	return MapNode{
 		content: content,
 	}
@@ -53,17 +58,6 @@ func MapSet(mapNode MapNode, key, value Node) MapNode {
 	}
 
 	return MapAppend(mapNode, key, value)
-}
-
-// if len(mapNode.Content()) % 2 == 1, append value node to Map and return them
-func MapRound(mapNode MapNode, value Node) MapNode {
-	if len(mapNode.Content())%2 == 0 {
-		return mapNode
-	}
-
-	return MapNode{
-		content: append(mapNode.Content(), value),
-	}
 }
 
 func MapSearchByStringKey(mapNode MapNode, searchKey string) int {
