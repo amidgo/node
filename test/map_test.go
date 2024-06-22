@@ -32,39 +32,39 @@ func Test_MapSet(t *testing.T) {
 			MapNode:  node.MakeMapNode(),
 			Key:      node.MakeStringNode("Key"),
 			Value:    node.MakeStringNode("Value"),
-			ExpectedMapNode: node.MakeMapNodeWithContent(
+			ExpectedMapNode: node.MakeMapNode(
 				node.MakeStringNode("Key"),
 				node.MakeStringNode("Value"),
 			),
 		},
 		&MapSetTest{
 			CaseName: "map with exists key",
-			MapNode: node.MakeMapNodeWithContent(
+			MapNode: node.MakeMapNode(
 				node.MakeStringNode("Key"),
 				node.MakeStringNode("Value"),
 			),
 			Key:   node.MakeStringNode("Key"),
 			Value: node.MakeStringNode("NewValue"),
-			ExpectedMapNode: node.MakeMapNodeWithContent(
+			ExpectedMapNode: node.MakeMapNode(
 				node.MakeStringNode("Key"),
 				node.MakeStringNode("NewValue"),
 			),
 		},
 		&MapSetTest{
 			CaseName: "map with key without value",
-			MapNode: node.MakeMapNodeWithContent(
+			MapNode: node.MakeMapNode(
 				node.MakeStringNode("Key"),
 			),
 			Key:   node.MakeStringNode("Key"),
 			Value: node.MakeStringNode("NewValue"),
-			ExpectedMapNode: node.MakeMapNodeWithContent(
+			ExpectedMapNode: node.MakeMapNode(
 				node.MakeStringNode("Key"),
 				node.MakeStringNode("NewValue"),
 			),
 		},
 		&MapSetTest{
 			CaseName: "many keys map with target key in the middle",
-			MapNode: node.MakeMapNodeWithContent(
+			MapNode: node.MakeMapNode(
 				node.MakeStringNode("Key"),
 				node.MakeStringNode("value"),
 				node.MakeStringNode("aboba"),
@@ -74,7 +74,7 @@ func Test_MapSet(t *testing.T) {
 			),
 			Key:   node.MakeStringNode("aboba"),
 			Value: node.MakeStringNode("aboba"),
-			ExpectedMapNode: node.MakeMapNodeWithContent(
+			ExpectedMapNode: node.MakeMapNode(
 				node.MakeStringNode("Key"),
 				node.MakeStringNode("value"),
 				node.MakeStringNode("aboba"),
@@ -85,7 +85,7 @@ func Test_MapSet(t *testing.T) {
 		},
 		&MapSetTest{
 			CaseName: "many keys map with target key in the end",
-			MapNode: node.MakeMapNodeWithContent(
+			MapNode: node.MakeMapNode(
 				node.MakeStringNode("Key"),
 				node.MakeStringNode("value"),
 				node.MakeStringNode("aboba"),
@@ -95,7 +95,7 @@ func Test_MapSet(t *testing.T) {
 			),
 			Key:   node.MakeStringNode("value"),
 			Value: node.MakeStringNode("aboba"),
-			ExpectedMapNode: node.MakeMapNodeWithContent(
+			ExpectedMapNode: node.MakeMapNode(
 				node.MakeStringNode("Key"),
 				node.MakeStringNode("value"),
 				node.MakeStringNode("aboba"),
@@ -134,7 +134,7 @@ func Test_MapSearchByStringKey(t *testing.T) {
 		},
 		&MapSearchByStringKeyTest{
 			CaseName: "not exists key",
-			MapNode: node.MakeMapNodeWithContent(
+			MapNode: node.MakeMapNode(
 				node.MakeStringNode("hello"),
 				node.MakeBoolNode(false),
 				node.MakeStringNode("aboba"),
@@ -147,7 +147,7 @@ func Test_MapSearchByStringKey(t *testing.T) {
 		},
 		&MapSearchByStringKeyTest{
 			CaseName: "exists key",
-			MapNode: node.MakeMapNodeWithContent(
+			MapNode: node.MakeMapNode(
 				node.MakeStringNode("hello"),
 				node.MakeBoolNode(false),
 				node.MakeStringNode("aboba"),
@@ -160,7 +160,7 @@ func Test_MapSearchByStringKey(t *testing.T) {
 		},
 		&MapSearchByStringKeyTest{
 			CaseName: "exists key",
-			MapNode: node.MakeMapNodeWithContent(
+			MapNode: node.MakeMapNode(
 				node.MakeStringNode("hello"),
 				node.MakeBoolNode(false),
 				node.MakeStringNode("aboba"),
@@ -174,7 +174,7 @@ func Test_MapSearchByStringKey(t *testing.T) {
 		},
 		&MapSearchByStringKeyTest{
 			CaseName: "exists key",
-			MapNode: node.MakeMapNodeWithContent(
+			MapNode: node.MakeMapNode(
 				node.MakeStringNode("hello"),
 				node.MakeBoolNode(false),
 				node.MakeStringNode("aboba"),
@@ -188,7 +188,7 @@ func Test_MapSearchByStringKey(t *testing.T) {
 		},
 		&MapSearchByStringKeyTest{
 			CaseName: "exists key by wrong kind",
-			MapNode: node.MakeMapNodeWithContent(
+			MapNode: node.MakeMapNode(
 				node.MakeStringNode("hello"),
 				node.MakeBoolNode(false),
 				node.MakeStringNode("aboba"),

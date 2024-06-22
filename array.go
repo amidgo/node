@@ -4,21 +4,9 @@ type ArrayNode struct {
 	content []Node
 }
 
-func MakeArrayNode() ArrayNode {
-	return ArrayNode{
-		content: make([]Node, 0),
-	}
-}
-
-func MakeArrayNodeWithContent(content ...Node) ArrayNode {
+func MakeArrayNode(content ...Node) ArrayNode {
 	return ArrayNode{
 		content: content,
-	}
-}
-
-func MakeArrayNodeWithCap(capacity int) ArrayNode {
-	return ArrayNode{
-		content: make([]Node, 0, capacity),
 	}
 }
 

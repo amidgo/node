@@ -18,16 +18,16 @@ func Test_Map_Encode(t *testing.T) {
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "basic map",
-			Node: node.MakeMapNodeWithContent(
+			Node: node.MakeMapNode(
 				node.MakeStringNode("key"), node.MakeStringNode("value"),
 			),
 			ExpectedData: `{"key":"value"}`,
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "inner map",
-			Node: node.MakeMapNodeWithContent(
+			Node: node.MakeMapNode(
 				node.MakeStringNode("key"), node.MakeStringNode("value"),
-				node.MakeStringNode("object"), node.MakeMapNodeWithContent(
+				node.MakeStringNode("object"), node.MakeMapNode(
 					node.MakeStringNode("key"), node.MakeStringNode("value"),
 					node.MakeStringNode("object"), node.MakeMapNode(),
 				),
@@ -37,42 +37,42 @@ func Test_Map_Encode(t *testing.T) {
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "bool key kind",
-			Node: node.MakeMapNodeWithContent(
+			Node: node.MakeMapNode(
 				node.MakeBoolNode(false), node.MakeStringNode("ksdf"),
 			),
 			ExpectedErr: json.ErrInvalidMapKeyKind,
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "null key kind",
-			Node: node.MakeMapNodeWithContent(
+			Node: node.MakeMapNode(
 				node.EmptyNode{}, node.MakeStringNode("ksdf"),
 			),
 			ExpectedErr: json.ErrInvalidMapKeyKind,
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "array key kind",
-			Node: node.MakeMapNodeWithContent(
+			Node: node.MakeMapNode(
 				node.MakeArrayNode(), node.MakeStringNode("ksdf"),
 			),
 			ExpectedErr: json.ErrInvalidMapKeyKind,
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "map key kind",
-			Node: node.MakeMapNodeWithContent(
+			Node: node.MakeMapNode(
 				node.MakeMapNode(), node.MakeStringNode("ksdf"),
 			),
 			ExpectedErr: json.ErrInvalidMapKeyKind,
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "integer key kind",
-			Node: node.MakeMapNodeWithContent(
+			Node: node.MakeMapNode(
 				node.MakeIntegerNode(0), node.MakeStringNode("ksdf"),
 			),
 			ExpectedErr: json.ErrInvalidMapKeyKind,
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "float key kind",
-			Node: node.MakeMapNodeWithContent(
+			Node: node.MakeMapNode(
 				node.MakeFloatNode(0), node.MakeStringNode("ksdf"),
 			),
 			ExpectedErr: json.ErrInvalidMapKeyKind,

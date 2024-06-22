@@ -29,10 +29,10 @@ func Test_Array_Decode(t *testing.T) {
 		&jsontest.DecodeTestCase{
 			CaseName: "inner array",
 			Data:     "[[],[],[[],[]]]",
-			ExpectedNode: node.MakeArrayNodeWithContent(
+			ExpectedNode: node.MakeArrayNode(
 				node.MakeArrayNode(),
 				node.MakeArrayNode(),
-				node.MakeArrayNodeWithContent(
+				node.MakeArrayNode(
 					node.MakeArrayNode(),
 					node.MakeArrayNode(),
 				),
@@ -41,7 +41,7 @@ func Test_Array_Decode(t *testing.T) {
 		&jsontest.DecodeTestCase{
 			CaseName: "array with all types of node",
 			Data:     `[null,true,false,1231323,123.1,"Hello World!",[],{}]`,
-			ExpectedNode: node.MakeArrayNodeWithContent(
+			ExpectedNode: node.MakeArrayNode(
 				node.EmptyNode{},
 				node.MakeBoolNode(true),
 				node.MakeBoolNode(false),

@@ -17,10 +17,10 @@ func Test_Array_Encode(t *testing.T) {
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "inner array node",
-			Node: node.MakeArrayNodeWithContent(
+			Node: node.MakeArrayNode(
 				node.MakeArrayNode(),
 				node.MakeArrayNode(),
-				node.MakeArrayNodeWithContent(
+				node.MakeArrayNode(
 					node.MakeArrayNode(),
 					node.MakeArrayNode(),
 				),
@@ -30,7 +30,7 @@ func Test_Array_Encode(t *testing.T) {
 		},
 		&jsontest.EncodeTestCase{
 			CaseName: "array with all types of node",
-			Node: node.MakeArrayNodeWithContent(
+			Node: node.MakeArrayNode(
 				node.EmptyNode{},
 				node.MakeBoolNode(true),
 				node.MakeBoolNode(false),

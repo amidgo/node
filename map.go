@@ -4,21 +4,9 @@ type MapNode struct {
 	content []Node
 }
 
-func MakeMapNode() MapNode {
-	return MapNode{
-		content: make([]Node, 0),
-	}
-}
-
-func MakeMapNodeWithContent(content ...Node) MapNode {
+func MakeMapNode(content ...Node) MapNode {
 	return MapNode{
 		content: content,
-	}
-}
-
-func MakeMapNodeWithCap(capacity int) MapNode {
-	return MapNode{
-		content: make([]Node, 0, capacity),
 	}
 }
 

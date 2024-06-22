@@ -39,11 +39,11 @@ func Test_Map_Decode(t *testing.T) {
 		&jsontest.DecodeTestCase{
 			CaseName: "inner empty map",
 			Data:     `{"a":{"b":{"c":{}}},"b":{}}`,
-			ExpectedNode: node.MakeMapNodeWithContent(
+			ExpectedNode: node.MakeMapNode(
 				node.MakeStringNode("a"),
-				node.MakeMapNodeWithContent(
+				node.MakeMapNode(
 					node.MakeStringNode("b"),
-					node.MakeMapNodeWithContent(
+					node.MakeMapNode(
 						node.MakeStringNode("c"),
 						node.MakeMapNode(),
 					),

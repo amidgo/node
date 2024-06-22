@@ -44,7 +44,7 @@ func Test_DecodeEmpty(t *testing.T) {
 			CaseName: "all null yaml cases",
 			Decoder:  new(yaml.Decoder),
 			Input:    nullData,
-			ExpectedNode: node.MakeMapNodeWithContent(
+			ExpectedNode: node.MakeMapNode(
 				&yaml.StyleNode{
 					Node: node.MakeStringNode("emptyKey"),
 				},
@@ -121,7 +121,7 @@ func Test_DecodeValueKind(t *testing.T) {
 			CaseName: "bool, integer, float value kinds",
 			Decoder:  new(yaml.Decoder),
 			Input:    valueData,
-			ExpectedNode: node.MakeMapNodeWithContent(
+			ExpectedNode: node.MakeMapNode(
 				&yaml.StyleNode{Node: node.MakeStringNode("trueValue")},
 				node.MakeBoolNode(true),
 				&yaml.StyleNode{Node: node.MakeStringNode("falseValue")},
