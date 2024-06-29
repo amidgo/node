@@ -35,17 +35,17 @@ func (m *MapIterableGenerate) MapNode() (MapNode, error) {
 	return MakeMapNode(content...), nil
 }
 
-type IterationStepJoin struct {
+type JoinIterationStep struct {
 	steps []IterationStep
 }
 
-func NewIterationStepJoin(steps ...IterationStep) *IterationStepJoin {
-	return &IterationStepJoin{
+func NewJoinIterationStep(steps ...IterationStep) *JoinIterationStep {
+	return &JoinIterationStep{
 		steps: steps,
 	}
 }
 
-func (i *IterationStepJoin) KeyValue(key, value Node) (resKey, resValue Node, err error) {
+func (i *JoinIterationStep) KeyValue(key, value Node) (resKey, resValue Node, err error) {
 	resKey, resValue = key, value
 
 	for _, step := range i.steps {
