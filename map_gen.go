@@ -4,22 +4,31 @@ type IterationStep interface {
 	KeyValue(key, value Node) (resultKey, resultValue Node, err error)
 }
 
-type MapIterableGenerate struct {
-	source   MapNode
+type MapSource interface {
+	MapNode() (MapNode, error)
+}
+
+type IterationMapSource struct {
+	source   MapSource
 	iterStep IterationStep
 }
 
-func NewMapIterableGenerate(sourceNode MapNode, iterStep IterationStep) *MapIterableGenerate {
-	return &MapIterableGenerate{
-		source:   sourceNode,
+func NewIterationMapSource(source MapSource, iterStep IterationStep) *IterationMapSource {
+	return &IterationMapSource{
+		source:   source,
 		iterStep: iterStep,
 	}
 }
 
-func (m *MapIterableGenerate) MapNode() (MapNode, error) {
-	iter := MakeMapNodeIterator(m.source.Content())
+func (m *IterationMapSource) MapNode() (MapNode, error) {
+	mapNode, err := m.source.MapNode()
+	if err != nil {
+		return mapNode, err
+	}
 
-	content := make([]Node, 0, len(m.source.Content()))
+	iter := MakeMapNodeIterator(mapNode.Content())
+
+	content := make([]Node, 0, len(mapNode.Content()))
 
 	for iter.HasNext() {
 		key, value := iter.Next()

@@ -15,6 +15,10 @@ func MakeMapNode(content ...Node) MapNode {
 	}
 }
 
+func (m MapNode) MapNode() (MapNode, error) {
+	return m, nil
+}
+
 func (n MapNode) Type() Type {
 	return Content
 }

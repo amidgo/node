@@ -208,7 +208,7 @@ func (m *MapIterableGenerateTest) Name() string {
 }
 
 func (m *MapIterableGenerateTest) Test(t *testing.T) {
-	gen := node.NewMapIterableGenerate(m.SourceMap, m.IterationStep)
+	gen := node.NewIterationMapSource(m.SourceMap, m.IterationStep)
 
 	mapNode, err := gen.MapNode()
 	require.ErrorIs(t, err, m.ExpectedError)
