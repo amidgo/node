@@ -25,3 +25,7 @@ func (s StringNode) Content() []Node {
 func (s StringNode) Value() string {
 	return s.value
 }
+
+func StringEquals(nd Node, s string) bool {
+	return nd.Kind() == String && nd.Value() == s
+}
