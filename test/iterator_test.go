@@ -21,7 +21,7 @@ func (c *MapNodeIteratorTest) Name() string {
 func (c *MapNodeIteratorTest) Test(t *testing.T) {
 	content := make([]node.Node, 0, len(c.ExpectedContent))
 
-	iterator := node.MakeMapNodeIterator(c.MapNodeContent)
+	iterator := node.MapNodeIterator(c.MapNodeContent)
 	for iterator.HasNext() {
 		key, value := iterator.Next()
 		content = append(content, key, value)
@@ -98,13 +98,13 @@ func Test_IndexedIterator(t *testing.T) {
 	tester.RunNamedTesters(t,
 		&IndexedIteratorTest{
 			CaseName:      "empty iterator",
-			Iterator:      node.MakeMapNodeIterator([]node.Node{}),
+			Iterator:      node.MapNodeIterator([]node.Node{}),
 			Iterations:    0,
 			ExpectedIndex: -2,
 		},
 		&IndexedIteratorTest{
 			CaseName: "iterator one iteration",
-			Iterator: node.MakeMapNodeIterator([]node.Node{
+			Iterator: node.MapNodeIterator([]node.Node{
 				node.MakeStringNode("key"),
 				node.MakeMapNode(),
 			}),
@@ -113,7 +113,7 @@ func Test_IndexedIterator(t *testing.T) {
 		},
 		&IndexedIteratorTest{
 			CaseName: "iterator one iteration",
-			Iterator: node.MakeMapNodeIterator([]node.Node{
+			Iterator: node.MapNodeIterator([]node.Node{
 				node.MakeStringNode("key"),
 				node.MakeMapNode(),
 			}),

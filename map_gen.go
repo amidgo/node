@@ -26,7 +26,7 @@ func (m iterationMapSource) MapNode() (MapNode, error) {
 		return mapNode, err
 	}
 
-	iter := MakeMapNodeIterator(mapNode.Content())
+	iter := MapNodeIterator(mapNode.Content())
 
 	content := make([]Node, 0, len(mapNode.Content()))
 

@@ -9,7 +9,7 @@ type mapNodeIterator struct {
 	content []Node
 }
 
-func MakeMapNodeIterator(content []Node) Iterator {
+func MapNodeIterator(content []Node) Iterator {
 	return &mapNodeIterator{
 		content: content,
 	}

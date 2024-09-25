@@ -148,7 +148,7 @@ func (w *nodeWriter) writeMapContent(content []node.Node) error {
 		return ErrInvalidMapContentSize
 	}
 
-	iterator := node.MakeMapNodeIterator(content)
+	iterator := node.MapNodeIterator(content)
 
 	if iterator.HasNext() {
 		err := w.writeNextMapIteratorNodePair(iterator)

@@ -42,7 +42,7 @@ func MapAppend(mapNode MapNode, key, value Node) MapNode {
 }
 
 func MapSet(mapNode MapNode, key, value Node) MapNode {
-	iter := NewIndexedIterator(MakeMapNodeIterator(mapNode.Content()))
+	iter := NewIndexedIterator(MapNodeIterator(mapNode.Content()))
 
 	for iter.HasNext() {
 		nextKey, _ := iter.Next()
@@ -65,7 +65,7 @@ func MapSet(mapNode MapNode, key, value Node) MapNode {
 }
 
 func MapSearchByStringKey(mapNode MapNode, searchKey string) int {
-	iter := NewIndexedIterator(MakeMapNodeIterator(mapNode.Content()))
+	iter := NewIndexedIterator(MapNodeIterator(mapNode.Content()))
 
 	for iter.HasNext() {
 		key, _ := iter.Next()
