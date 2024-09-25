@@ -22,7 +22,7 @@ func MustDecode(decoder Decoder, data []byte) Node {
 	return nd
 }
 
-func MustDecodeTo(decoder DecoderFrom, src io.Reader) Node {
+func MustDecodeFrom(decoder DecoderFrom, src io.Reader) Node {
 	nd, err := decoder.DecodeFrom(src)
 	if err != nil {
 		log.Panicf("decoder.DecodeFrom failed, %s", err)
