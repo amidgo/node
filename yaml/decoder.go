@@ -105,7 +105,7 @@ func (d *Decoder) convertSequenceYamlNode(ynd *yaml.Node) (node.Node, error) {
 		arrayNode = node.ArrayAppend(arrayNode, nd)
 	}
 
-	return &StyleNode{Node: arrayNode, YamlStyle: ynd.Style}, nil
+	return StyleNode(arrayNode, ynd.Style), nil
 }
 
 const (
@@ -141,14 +141,37 @@ func convertScalarYamlNode(ynd *yaml.Node) node.Node {
 }
 
 func stringNode(value string, style yaml.Style) node.Node {
-	return &StyleNode{Node: node.MakeStringNode(value), YamlStyle: style}
+	return StyleNode(node.MakeStringNode(value), style)
 }
 
-type StyleNode struct {
-	node.Node
-	YamlStyle yaml.Style
+func StyleNode(nd node.Node, style yaml.Style) node.Node {
+	return styleNode{
+		node:      nd,
+		yamlStyle: style,
+	}
 }
 
-func (y *StyleNode) Style() yaml.Style {
-	return y.YamlStyle
+type styleNode struct {
+	node      node.Node
+	yamlStyle yaml.Style
+}
+
+func (y styleNode) Style() yaml.Style {
+	return y.yamlStyle
+}
+
+func (y styleNode) Type() node.Type {
+	return y.node.Type()
+}
+
+func (y styleNode) Kind() node.Kind {
+	return y.node.Kind()
+}
+
+func (y styleNode) Content() []node.Node {
+	return y.node.Content()
+}
+
+func (y styleNode) Value() string {
+	return y.node.Value()
 }

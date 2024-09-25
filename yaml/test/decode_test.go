@@ -45,71 +45,63 @@ func Test_DecodeEmpty(t *testing.T) {
 			Decoder:  new(yaml.Decoder),
 			Input:    nullData,
 			ExpectedNode: node.MakeMapNode(
-				&yaml.StyleNode{
-					Node: node.MakeStringNode("emptyKey"),
-				},
+				yaml.StyleNode(node.MakeStringNode("emptyKey"), 0),
 				node.EmptyNode{},
 
-				&yaml.StyleNode{
-					Node: node.MakeStringNode("nullKey"),
-				},
+				yaml.StyleNode(node.MakeStringNode("nullKey"), 0),
 				node.EmptyNode{},
 
-				&yaml.StyleNode{
-					Node: node.MakeStringNode("singleCharNullKey"),
-				},
+				yaml.StyleNode(node.MakeStringNode("singleCharNullKey"), 0),
 				node.EmptyNode{},
 
-				&yaml.StyleNode{
-					Node: node.MakeStringNode("singleQuotedEmptyKey"),
-				},
-				&yaml.StyleNode{
-					Node:      node.MakeStringNode(""),
-					YamlStyle: pkgyaml.SingleQuotedStyle,
-				},
+				yaml.StyleNode(node.MakeStringNode("singleQuotedEmptyKey"), 0),
+				yaml.StyleNode(
+					node.MakeStringNode(""),
+					pkgyaml.SingleQuotedStyle,
+				),
 
-				&yaml.StyleNode{
-					Node: node.MakeStringNode("singleQuotedNullKey"),
-				},
-				&yaml.StyleNode{
-					Node:      node.MakeStringNode("null"),
-					YamlStyle: pkgyaml.SingleQuotedStyle,
-				},
+				yaml.StyleNode(node.MakeStringNode("singleQuotedNullKey"), 0),
+				yaml.StyleNode(
+					node.MakeStringNode("null"),
+					pkgyaml.SingleQuotedStyle,
+				),
 
-				&yaml.StyleNode{
-					Node: node.MakeStringNode("singleQuotedSingleCharNullKey"),
-				},
-				&yaml.StyleNode{
-					Node:      node.MakeStringNode("~"),
-					YamlStyle: pkgyaml.SingleQuotedStyle,
-				},
+				yaml.StyleNode(
+					node.MakeStringNode("singleQuotedSingleCharNullKey"),
+					0,
+				),
 
-				&yaml.StyleNode{
-					Node: node.MakeStringNode("doubleQuotedEmptyKey"),
-					// YamlStyle: pkgyaml.TaggedStyle,
-				},
-				&yaml.StyleNode{
-					Node:      node.MakeStringNode(""),
-					YamlStyle: pkgyaml.DoubleQuotedStyle,
-				},
+				yaml.StyleNode(
+					node.MakeStringNode("~"),
+					pkgyaml.SingleQuotedStyle,
+				),
 
-				&yaml.StyleNode{
-					Node: node.MakeStringNode("doubleQuotedNullKey"),
-					// YamlStyle: pkgyaml.TaggedStyle,
-				},
-				&yaml.StyleNode{
-					Node:      node.MakeStringNode("null"),
-					YamlStyle: pkgyaml.DoubleQuotedStyle,
-				},
+				yaml.StyleNode(
+					node.MakeStringNode("doubleQuotedEmptyKey"),
+					0,
+				),
+				yaml.StyleNode(
+					node.MakeStringNode(""),
+					pkgyaml.DoubleQuotedStyle,
+				),
 
-				&yaml.StyleNode{
-					Node: node.MakeStringNode("doubleQuotedSingleCharNullKey"),
-					// YamlStyle: pkgyaml.TaggedStyle,
-				},
-				&yaml.StyleNode{
-					Node:      node.MakeStringNode("~"),
-					YamlStyle: pkgyaml.DoubleQuotedStyle,
-				},
+				yaml.StyleNode(
+					node.MakeStringNode("doubleQuotedNullKey"),
+					0,
+				),
+				yaml.StyleNode(
+					node.MakeStringNode("null"),
+					pkgyaml.DoubleQuotedStyle,
+				),
+
+				yaml.StyleNode(
+					node.MakeStringNode("doubleQuotedSingleCharNullKey"),
+					0,
+				),
+				yaml.StyleNode(
+					node.MakeStringNode("~"),
+					pkgyaml.DoubleQuotedStyle,
+				),
 			),
 		},
 	)
@@ -122,16 +114,16 @@ func Test_DecodeValueKind(t *testing.T) {
 			Decoder:  new(yaml.Decoder),
 			Input:    valueData,
 			ExpectedNode: node.MakeMapNode(
-				&yaml.StyleNode{Node: node.MakeStringNode("trueValue")},
+				yaml.StyleNode(node.MakeStringNode("trueValue"), 0),
 				node.MakeBoolNode(true),
-				&yaml.StyleNode{Node: node.MakeStringNode("falseValue")},
+				yaml.StyleNode(node.MakeStringNode("falseValue"), 0),
 				node.MakeBoolNode(false),
-				&yaml.StyleNode{Node: node.MakeStringNode("integerValue")},
+				yaml.StyleNode(node.MakeStringNode("integerValue"), 0),
 				node.MakeIntegerNode(1008001),
-				&yaml.StyleNode{Node: node.MakeStringNode("floatValue")},
+				yaml.StyleNode(node.MakeStringNode("floatValue"), 0),
 				node.MakeFloatNode(3.1),
-				&yaml.StyleNode{Node: node.MakeStringNode("stringValue")},
-				&yaml.StyleNode{Node: node.MakeStringNode("aboba")},
+				yaml.StyleNode(node.MakeStringNode("stringValue"), 0),
+				yaml.StyleNode(node.MakeStringNode("aboba"), 0),
 			),
 		},
 	)
