@@ -1,20 +1,25 @@
 package node
 
-type MapNodeIterator struct {
+type Iterator interface {
+	HasNext() bool
+	Next() (key, value Node)
+}
+
+type mapNodeIterator struct {
 	content []Node
 }
 
-func MakeMapNodeIterator(content []Node) *MapNodeIterator {
-	return &MapNodeIterator{
+func MakeMapNodeIterator(content []Node) Iterator {
+	return &mapNodeIterator{
 		content: content,
 	}
 }
 
-func (i *MapNodeIterator) HasNext() bool {
+func (i *mapNodeIterator) HasNext() bool {
 	return len(i.content) >= 1
 }
 
-func (i *MapNodeIterator) Next() (key, value Node) {
+func (i *mapNodeIterator) Next() (key, value Node) {
 	key = i.content[0]
 
 	if len(i.content) == 1 {
@@ -27,11 +32,6 @@ func (i *MapNodeIterator) Next() (key, value Node) {
 	i.content = i.content[2:]
 
 	return key, value
-}
-
-type Iterator interface {
-	HasNext() bool
-	Next() (key, value Node)
 }
 
 type IndexedIterator struct {

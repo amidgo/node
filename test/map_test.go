@@ -208,7 +208,7 @@ func (m *MapIterableGenerateTest) Name() string {
 }
 
 func (m *MapIterableGenerateTest) Test(t *testing.T) {
-	gen := node.NewIterationMapSource(m.SourceMap, m.IterationStep)
+	gen := node.IterationMapSource(m.SourceMap, m.IterationStep)
 
 	mapNode, err := gen.MapNode()
 	require.ErrorIs(t, err, m.ExpectedError)
@@ -236,7 +236,7 @@ func Test_MapIterableGenerate(t *testing.T) {
 				node.MakeStringNode("key"),
 				node.MakeStringNode("value"),
 			),
-			IterationStep: node.NewJoinIterationStep(),
+			IterationStep: node.JoinIterationSteps(),
 			ExpectedMap: node.MakeMapNode(
 				node.MakeStringNode("key"),
 				node.MakeStringNode("value"),
@@ -248,7 +248,7 @@ func Test_MapIterableGenerate(t *testing.T) {
 				node.MakeStringNode("key"),
 				node.MakeStringNode("value"),
 			),
-			IterationStep: node.NewJoinIterationStep(
+			IterationStep: node.JoinIterationSteps(
 				&IterationSetStep{
 					Key:       "key",
 					KeyNode:   node.MakeStringNode("key"),
@@ -266,7 +266,7 @@ func Test_MapIterableGenerate(t *testing.T) {
 				node.MakeStringNode("key"),
 				node.MakeStringNode("value"),
 			),
-			IterationStep: node.NewJoinIterationStep(
+			IterationStep: node.JoinIterationSteps(
 				&IterationSetStep{
 					Key:       "key",
 					KeyNode:   node.MakeStringNode("key"),
@@ -294,7 +294,7 @@ func Test_MapIterableGenerate(t *testing.T) {
 				node.MakeStringNode("key"),
 				node.MakeStringNode("value"),
 			),
-			IterationStep: node.NewJoinIterationStep(
+			IterationStep: node.JoinIterationSteps(
 				&IterationSetStep{
 					Key:       "key",
 					KeyNode:   node.MakeStringNode("newKey"),

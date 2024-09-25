@@ -8,19 +8,19 @@ type MapSource interface {
 	MapNode() (MapNode, error)
 }
 
-type IterationMapSource struct {
+type iterationMapSource struct {
 	source   MapSource
 	iterStep IterationStep
 }
 
-func NewIterationMapSource(source MapSource, iterStep IterationStep) *IterationMapSource {
-	return &IterationMapSource{
+func IterationMapSource(source MapSource, iterStep IterationStep) MapSource {
+	return iterationMapSource{
 		source:   source,
 		iterStep: iterStep,
 	}
 }
 
-func (m *IterationMapSource) MapNode() (MapNode, error) {
+func (m iterationMapSource) MapNode() (MapNode, error) {
 	mapNode, err := m.source.MapNode()
 	if err != nil {
 		return mapNode, err
@@ -44,17 +44,17 @@ func (m *IterationMapSource) MapNode() (MapNode, error) {
 	return MakeMapNode(content...), nil
 }
 
-type JoinIterationStep struct {
+type joinIterationStep struct {
 	steps []IterationStep
 }
 
-func NewJoinIterationStep(steps ...IterationStep) *JoinIterationStep {
-	return &JoinIterationStep{
+func JoinIterationSteps(steps ...IterationStep) IterationStep {
+	return joinIterationStep{
 		steps: steps,
 	}
 }
 
-func (i *JoinIterationStep) KeyValue(key, value Node) (resKey, resValue Node, err error) {
+func (i joinIterationStep) KeyValue(key, value Node) (resKey, resValue Node, err error) {
 	resKey, resValue = key, value
 
 	for _, step := range i.steps {

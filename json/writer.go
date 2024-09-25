@@ -172,7 +172,7 @@ func (w *nodeWriter) writeMapContent(content []node.Node) error {
 	return nil
 }
 
-func (w *nodeWriter) writeNextMapIteratorNodePair(iterator *node.MapNodeIterator) error {
+func (w *nodeWriter) writeNextMapIteratorNodePair(iterator node.Iterator) error {
 	key, value := iterator.Next()
 	if key.Kind() != node.String {
 		return ErrInvalidMapKeyKind
