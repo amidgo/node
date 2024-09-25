@@ -6,10 +6,6 @@ type MapNode struct {
 
 // panics on len(content) % 2 == 1
 func MakeMapNode(content ...Node) MapNode {
-	if len(content)%2 == 1 {
-		panic("invalid content size")
-	}
-
 	return MapNode{
 		content: content,
 	}
@@ -36,6 +32,12 @@ func (n MapNode) Value() string {
 }
 
 func MapAppend(mapNode MapNode, key, value Node) MapNode {
+	if len(mapNode.Content())%2 == 1 {
+		return MapNode{
+			content: append(mapNode.Content(), EmptyNode{}, key, value),
+		}
+	}
+
 	return MapNode{
 		content: append(mapNode.Content(), key, value),
 	}
