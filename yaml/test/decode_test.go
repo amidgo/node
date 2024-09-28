@@ -45,59 +45,47 @@ func Test_DecodeEmpty(t *testing.T) {
 			Decoder:  new(yaml.Decoder),
 			Input:    nullData,
 			ExpectedNode: node.MakeMapNode(
-				yaml.StyleNode(node.MakeStringNode("emptyKey"), 0),
+				node.MakeStringNode("emptyKey"),
 				node.EmptyNode{},
 
-				yaml.StyleNode(node.MakeStringNode("nullKey"), 0),
+				node.MakeStringNode("nullKey"),
 				node.EmptyNode{},
 
-				yaml.StyleNode(node.MakeStringNode("singleCharNullKey"), 0),
+				node.MakeStringNode("singleCharNullKey"),
 				node.EmptyNode{},
 
-				yaml.StyleNode(node.MakeStringNode("singleQuotedEmptyKey"), 0),
+				node.MakeStringNode("singleQuotedEmptyKey"),
 				yaml.StyleNode(
 					node.MakeStringNode(""),
 					pkgyaml.SingleQuotedStyle,
 				),
 
-				yaml.StyleNode(node.MakeStringNode("singleQuotedNullKey"), 0),
+				node.MakeStringNode("singleQuotedNullKey"),
 				yaml.StyleNode(
 					node.MakeStringNode("null"),
 					pkgyaml.SingleQuotedStyle,
 				),
 
-				yaml.StyleNode(
-					node.MakeStringNode("singleQuotedSingleCharNullKey"),
-					0,
-				),
+				node.MakeStringNode("singleQuotedSingleCharNullKey"),
 
 				yaml.StyleNode(
 					node.MakeStringNode("~"),
 					pkgyaml.SingleQuotedStyle,
 				),
 
-				yaml.StyleNode(
-					node.MakeStringNode("doubleQuotedEmptyKey"),
-					0,
-				),
+				node.MakeStringNode("doubleQuotedEmptyKey"),
 				yaml.StyleNode(
 					node.MakeStringNode(""),
 					pkgyaml.DoubleQuotedStyle,
 				),
 
-				yaml.StyleNode(
-					node.MakeStringNode("doubleQuotedNullKey"),
-					0,
-				),
+				node.MakeStringNode("doubleQuotedNullKey"),
 				yaml.StyleNode(
 					node.MakeStringNode("null"),
 					pkgyaml.DoubleQuotedStyle,
 				),
 
-				yaml.StyleNode(
-					node.MakeStringNode("doubleQuotedSingleCharNullKey"),
-					0,
-				),
+				node.MakeStringNode("doubleQuotedSingleCharNullKey"),
 				yaml.StyleNode(
 					node.MakeStringNode("~"),
 					pkgyaml.DoubleQuotedStyle,
@@ -114,16 +102,16 @@ func Test_DecodeValueKind(t *testing.T) {
 			Decoder:  new(yaml.Decoder),
 			Input:    valueData,
 			ExpectedNode: node.MakeMapNode(
-				yaml.StyleNode(node.MakeStringNode("trueValue"), 0),
+				node.MakeStringNode("trueValue"),
 				node.MakeBoolNode(true),
-				yaml.StyleNode(node.MakeStringNode("falseValue"), 0),
+				node.MakeStringNode("falseValue"),
 				node.MakeBoolNode(false),
-				yaml.StyleNode(node.MakeStringNode("integerValue"), 0),
+				node.MakeStringNode("integerValue"),
 				node.MakeIntegerNode(1008001),
-				yaml.StyleNode(node.MakeStringNode("floatValue"), 0),
+				node.MakeStringNode("floatValue"),
 				node.MakeFloatNode(3.1),
-				yaml.StyleNode(node.MakeStringNode("stringValue"), 0),
-				yaml.StyleNode(node.MakeStringNode("aboba"), 0),
+				node.MakeStringNode("stringValue"),
+				node.MakeStringNode("aboba"),
 			),
 		},
 	)

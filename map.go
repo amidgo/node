@@ -4,7 +4,6 @@ type MapNode struct {
 	content []Node
 }
 
-// panics on len(content) % 2 == 1
 func MakeMapNode(content ...Node) MapNode {
 	return MapNode{
 		content: content,

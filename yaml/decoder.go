@@ -105,7 +105,7 @@ func (d *Decoder) convertSequenceYamlNode(ynd *yaml.Node) (node.Node, error) {
 		arrayNode = node.ArrayAppend(arrayNode, nd)
 	}
 
-	return StyleNode(arrayNode, ynd.Style), nil
+	return wrapWithStyle(arrayNode, ynd.Style), nil
 }
 
 const (
@@ -124,24 +124,35 @@ func convertScalarYamlNode(ynd *yaml.Node) node.Node {
 	case intTag:
 		i, err := strconv.ParseInt(ynd.Value, 10, 64)
 		if err != nil {
-			return stringNode(ynd.Value, ynd.Style)
+			return wrapWithStyle(node.MakeStringNode(ynd.Value), ynd.Style)
 		}
 
 		return node.MakeIntegerNode(i)
 	case floatTag:
 		f, err := strconv.ParseFloat(ynd.Value, 64)
 		if err != nil {
-			return stringNode(ynd.Value, ynd.Style)
+			return wrapWithStyle(node.MakeStringNode(ynd.Value), ynd.Style)
 		}
 
 		return node.MakeFloatNode(f)
 	default:
-		return stringNode(ynd.Value, ynd.Style)
+		return wrapWithStyle(node.MakeStringNode(ynd.Value), ynd.Style)
 	}
 }
 
-func stringNode(value string, style yaml.Style) node.Node {
-	return StyleNode(node.MakeStringNode(value), style)
+func wrapWithStyle(node node.Node, style yaml.Style) node.Node {
+	switch style {
+	case
+		yaml.TaggedStyle,
+		yaml.DoubleQuotedStyle,
+		yaml.SingleQuotedStyle,
+		yaml.LiteralStyle,
+		yaml.FoldedStyle,
+		yaml.FlowStyle:
+		return StyleNode(node, style)
+	default:
+		return node
+	}
 }
 
 func StyleNode(nd node.Node, style yaml.Style) node.Node {
